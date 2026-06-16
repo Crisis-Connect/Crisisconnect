@@ -1,0 +1,1162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>CrisisConnect — Bangalore Crisis Navigator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #F7F6F2;
+    --coral: #D85A30;
+    --coral-dark: #c14d27;
+    --teal: #1D9E75;
+    --text: #1A1A1A;
+    --text-sec: #6B6B6B;
+    --card: #FFFFFF;
+    --border: #E2E0D8;
+    --amber: #C98A1B;
+    --red: #C0392B;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--bg); }
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    color: var(--text);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    padding-bottom: 60px;
+  }
+
+  .top-bar { height: 4px; background: var(--coral); width: 100%; }
+  .wrap { max-width: 680px; margin: 0 auto; padding: 28px 24px; }
+
+  /* Header */
+  header { margin-bottom: 18px; }
+  .app-name { color: var(--coral); font-size: 28px; font-weight: 700; letter-spacing: -0.02em; }
+  .tagline { color: var(--text-sec); font-size: 15px; margin-top: 4px; }
+
+  .section { margin-bottom: 22px; }
+
+  /* Top controls row: key + language */
+  .controls { display: flex; gap: 10px; flex-wrap: wrap; align-items: flex-start; margin-bottom: 20px; }
+  .controls > * { flex: 1; min-width: 220px; }
+
+  .key-box, .lang-box {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 12px; padding: 14px 16px;
+  }
+  .key-box label, .lang-box label {
+    display: block; font-size: 13px; font-weight: 600; color: var(--text-sec); margin-bottom: 8px;
+  }
+  .key-row { display: flex; gap: 10px; }
+  .key-hint { font-size: 12px; color: var(--text-sec); margin-top: 9px; }
+  .key-hint a { color: var(--coral); }
+
+  input[type="password"], input[type="text"], textarea, select {
+    width: 100%; font-family: inherit; font-size: 15px; color: var(--text);
+    background: var(--bg); border: 1px solid var(--border); border-radius: 9px;
+    padding: 11px 13px; transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  input:focus, textarea:focus, select:focus {
+    outline: none; border-color: var(--coral); box-shadow: 0 0 0 3px rgba(216,90,48,0.12);
+  }
+  select { cursor: pointer; }
+
+  .key-save-btn {
+    flex-shrink: 0; background: var(--text); color: #fff; border: none; border-radius: 9px;
+    padding: 0 18px; font-family: inherit; font-size: 14px; font-weight: 600; cursor: pointer; transition: opacity 0.15s;
+  }
+  .key-save-btn:hover { opacity: 0.85; }
+
+  .connected-badge {
+    display: none; align-items: center; gap: 7px;
+    background: rgba(29,158,117,0.1); border: 1px solid rgba(29,158,117,0.3);
+    color: var(--teal); font-size: 13px; font-weight: 600; padding: 8px 14px;
+    border-radius: 999px; width: fit-content;
+  }
+  .connected-badge .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--teal); }
+  .connected-badge button {
+    background: none; border: none; color: var(--text-sec); font-size: 12px; cursor: pointer;
+    margin-left: 4px; text-decoration: underline; font-family: inherit;
+  }
+
+  /* Tabs */
+  .tabs {
+    display: flex; gap: 6px; overflow-x: auto; padding-bottom: 4px;
+    margin-bottom: 22px; border-bottom: 1px solid var(--border);
+    -webkit-overflow-scrolling: touch;
+  }
+  .tab-btn {
+    flex-shrink: 0; background: transparent; border: none; border-bottom: 2px solid transparent;
+    padding: 10px 12px; font-family: inherit; font-size: 14px; font-weight: 600; color: var(--text-sec);
+    cursor: pointer; transition: color 0.15s, border-color 0.15s; position: relative; white-space: nowrap;
+  }
+  .tab-btn:hover { color: var(--text); }
+  .tab-btn.active { color: var(--coral); border-bottom-color: var(--coral); }
+  .tab-badge {
+    display: none; position: absolute; top: 4px; right: 2px; min-width: 16px; height: 16px;
+    background: var(--coral); color: #fff; font-size: 10px; font-weight: 700; border-radius: 999px;
+    padding: 0 4px; line-height: 16px; text-align: center;
+  }
+
+  .panel { display: none; animation: fadeIn 0.3s ease-out both; }
+  .panel.active { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* Generic */
+  .big-label { font-size: 22px; font-weight: 700; letter-spacing: -0.01em; margin-bottom: 6px; }
+  .sub-label { color: var(--text-sec); font-size: 14px; margin-bottom: 14px; }
+
+  textarea { resize: vertical; min-height: 104px; line-height: 1.55; }
+
+  .shake { animation: shake 0.4s; }
+  @keyframes shake { 0%,100%{transform:translateX(0);} 20%,60%{transform:translateX(-7px);} 40%,80%{transform:translateX(7px);} }
+
+  .inline-err { display: none; color: var(--coral); font-size: 13px; font-weight: 500; margin-top: 8px; }
+
+  .btn-primary {
+    width: 100%; background: var(--coral); color: #fff; border: none; border-radius: 10px; padding: 15px;
+    font-family: inherit; font-size: 16px; font-weight: 600; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    transition: background 0.15s, transform 0.05s;
+  }
+  .btn-primary:hover { background: var(--coral-dark); }
+  .btn-primary:active { transform: scale(0.99); }
+  .btn-primary:disabled { opacity: 0.75; cursor: default; }
+
+  .btn-secondary {
+    background: transparent; border: 1px solid var(--border); border-radius: 9px; padding: 10px 14px;
+    font-family: inherit; font-size: 13px; font-weight: 600; color: var(--text); cursor: pointer;
+    display: inline-flex; align-items: center; gap: 7px; transition: border-color 0.15s, background 0.15s;
+  }
+  .btn-secondary:hover { border-color: var(--coral); background: rgba(216,90,48,0.05); }
+  .btn-secondary:disabled { opacity: 0.5; cursor: default; }
+
+  .row-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+
+  .spinner { width: 17px; height: 17px; border: 2.5px solid rgba(255,255,255,0.4); border-top-color: #fff; border-radius: 50%; animation: spin 0.7s linear infinite; }
+  .spinner.dark { border-color: rgba(0,0,0,0.15); border-top-color: var(--coral); }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* Toast */
+  .toast {
+    position: fixed; top: 20px; right: 20px; z-index: 1000; background: var(--card);
+    border: 1px solid var(--border); border-radius: 10px; padding: 12px 16px; font-size: 14px; font-weight: 600;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.12); display: flex; align-items: center; gap: 9px;
+    animation: toastIn 0.25s ease-out; max-width: 320px;
+  }
+  @keyframes toastIn { from { transform: translateX(20px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+  .toast.success { border-color: rgba(29,158,117,0.45); color: var(--teal); }
+  .toast.error { border-color: rgba(216,90,48,0.45); color: var(--coral); }
+  @media (max-width: 600px) { .toast { left: 16px; right: 16px; top: 16px; justify-content: center; } }
+
+  @media (prefers-reduced-motion: reduce) {
+    .fade-sec, .panel { transition: none; animation: none; }
+    .toast { animation: none; }
+    .shake { animation: none; }
+  }
+
+  /* Demo scenarios */
+  .demos { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+  .demo-btn {
+    background: transparent; border: 1px solid var(--border); border-radius: 999px; padding: 8px 14px;
+    font-family: inherit; font-size: 13px; font-weight: 500; color: var(--text); cursor: pointer;
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .demo-btn:hover { border-color: var(--coral); background: rgba(216,90,48,0.05); }
+
+  /* Output card */
+  #output { margin-top: 26px; }
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 24px; box-shadow: 0 2px 18px rgba(0,0,0,0.04); }
+
+  .fade-sec { opacity: 0; transform: translateY(10px); transition: opacity 0.45s ease, transform 0.45s ease; }
+  .fade-sec.visible { opacity: 1; transform: translateY(0); }
+
+  .crisis-pill { display: inline-flex; align-items: center; gap: 7px; background: rgba(216,90,48,0.1); color: var(--coral); font-size: 14px; font-weight: 600; padding: 8px 15px; border-radius: 999px; }
+  .understood { font-size: 19px; font-weight: 600; letter-spacing: -0.01em; margin-top: 18px; line-height: 1.4; }
+
+  .sec-heading { font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-sec); margin-bottom: 10px; }
+
+  .best-block { margin-top: 24px; }
+  .best-card { border: 1px solid var(--border); border-left: 3px solid var(--teal); border-radius: 10px; padding: 18px; background: #fff; }
+  .org-name { font-size: 18px; font-weight: 700; letter-spacing: -0.01em; }
+  .org-provides { color: var(--text-sec); font-size: 14px; margin-top: 4px; }
+  .phone-link { display: inline-block; font-size: 24px; font-weight: 700; color: var(--teal); text-decoration: none; margin: 12px 0 4px; letter-spacing: -0.01em; }
+  .phone-link:hover { text-decoration: underline; }
+  .org-area { font-size: 13px; color: var(--text-sec); }
+  .meta-row { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; margin-top: 12px; font-size: 13px; }
+  .avail { display: inline-flex; align-items: center; gap: 6px; font-weight: 600; }
+  .avail.available { color: var(--teal); }
+  .avail.limited { color: var(--amber); }
+  .updated { color: var(--text-sec); }
+  .distance { color: var(--teal); font-weight: 600; }
+
+  .call-script { margin-top: 16px; background: rgba(29,158,117,0.07); border-radius: 9px; padding: 13px 15px; font-size: 14px; }
+  .call-script .lead { font-weight: 700; }
+  .call-script .phrase { font-style: italic; }
+
+  .bring-block { margin-top: 16px; }
+  .bring-block .label { font-size: 13px; font-weight: 700; margin-bottom: 7px; }
+  .bring-block ul { list-style: none; }
+  .bring-block li { font-size: 14px; padding: 3px 0 3px 22px; position: relative; }
+  .bring-block li::before { content: "→"; position: absolute; left: 0; color: var(--teal); font-weight: 700; }
+
+  .fallback-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .fb-card { border: 1px solid var(--border); border-radius: 10px; padding: 14px; }
+  .fb-name { font-size: 15px; font-weight: 700; letter-spacing: -0.01em; }
+  .fb-provides { font-size: 12.5px; color: var(--text-sec); margin: 4px 0 8px; }
+  .fb-phone { display: block; font-size: 17px; font-weight: 700; color: var(--teal); text-decoration: none; margin-bottom: 6px; }
+  .fb-phone:hover { text-decoration: underline; }
+
+  .always-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .always-item { background: var(--bg); border: 1px solid var(--border); border-radius: 9px; padding: 12px 14px; }
+  .always-item .num { font-size: 17px; font-weight: 700; }
+  .always-item .num a { color: var(--coral); text-decoration: none; }
+  .always-item .num a:hover { text-decoration: underline; }
+  .always-item .desc { font-size: 12.5px; color: var(--text-sec); margin-top: 2px; }
+
+  .divider { height: 1px; background: var(--border); margin: 24px 0; }
+  .card-notice { font-size: 12px; color: var(--text-sec); line-height: 1.55; margin-top: 22px; }
+
+  /* Translation panel */
+  .translate-panel { margin-top: 16px; background: var(--bg); border: 1px dashed var(--border); border-radius: 10px; padding: 16px; display: none; }
+  .translate-panel.show { display: block; }
+  .translate-panel .tp-head { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-sec); margin-bottom: 8px; display:flex; align-items:center; justify-content:space-between; gap: 10px; }
+  .translate-panel .tp-body { font-size: 15px; line-height: 1.6; white-space: pre-wrap; }
+
+  .error-box { background: rgba(216,90,48,0.07); border: 1px solid rgba(216,90,48,0.25); border-radius: 12px; padding: 20px; text-align: center; color: var(--coral); font-size: 15px; font-weight: 500; }
+
+  /* Upload dropzone */
+  .dropzone {
+    border: 2px dashed var(--border); border-radius: 12px; padding: 28px 20px; text-align: center;
+    cursor: pointer; transition: border-color 0.15s, background 0.15s; background: var(--card);
+  }
+  .dropzone:hover { border-color: var(--coral); background: rgba(216,90,48,0.03); }
+  .dropzone .dz-emoji { font-size: 30px; }
+  .dropzone .dz-main { font-weight: 600; margin-top: 8px; }
+  .dropzone .dz-sub { font-size: 13px; color: var(--text-sec); margin-top: 4px; }
+  .preview-img { max-width: 100%; border-radius: 10px; border: 1px solid var(--border); margin-top: 14px; display: block; }
+
+  /* Analysis result */
+  .badge { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; font-weight: 700; padding: 5px 11px; border-radius: 999px; }
+  .badge.legit { background: rgba(29,158,117,0.12); color: var(--teal); }
+  .badge.suspicious { background: rgba(201,138,27,0.14); color: var(--amber); }
+  .badge.scam { background: rgba(192,57,43,0.12); color: var(--red); }
+  .badge.prio-high { background: rgba(192,57,43,0.12); color: var(--red); }
+  .badge.prio-medium { background: rgba(201,138,27,0.14); color: var(--amber); }
+  .badge.prio-low { background: rgba(107,107,107,0.12); color: var(--text-sec); }
+  .badge-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+
+  .kv { margin-top: 14px; }
+  .kv .k { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-sec); margin-bottom: 5px; }
+  .kv .v { font-size: 15px; line-height: 1.55; white-space: pre-wrap; }
+  .advice-list { list-style: none; margin-top: 6px; }
+  .advice-list li { font-size: 14.5px; padding: 5px 0 5px 24px; position: relative; }
+  .advice-list li::before { content: "✓"; position: absolute; left: 0; color: var(--teal); font-weight: 700; }
+
+  /* Vault / community list */
+  .list-empty { text-align: center; color: var(--text-sec); font-size: 14px; padding: 30px 10px; }
+  .vault-item, .feed-item {
+    background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; margin-bottom: 12px;
+  }
+  .vault-item.urgent, .feed-item.urgent { border-left: 3px solid var(--red); }
+  .vault-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+  .vault-title { font-weight: 700; font-size: 15.5px; }
+  .vault-meta { font-size: 12.5px; color: var(--text-sec); margin-top: 3px; }
+  .vault-deadline { font-size: 13px; font-weight: 600; margin-top: 8px; }
+  .vault-deadline.due { color: var(--red); }
+  .vault-deadline.soon { color: var(--amber); }
+  .icon-btn { background: none; border: none; color: var(--text-sec); cursor: pointer; font-size: 13px; font-family: inherit; text-decoration: underline; padding: 0; }
+  .vault-detail { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border); display: none; }
+  .vault-detail.show { display: block; }
+
+  .feed-pill { display:inline-flex; align-items:center; gap:6px; font-size: 11.5px; font-weight: 700; padding: 3px 9px; border-radius: 999px; text-transform: uppercase; letter-spacing: 0.04em; }
+  .feed-pill.emergency { background: rgba(192,57,43,0.12); color: var(--red); }
+  .feed-pill.hazard { background: rgba(201,138,27,0.14); color: var(--amber); }
+  .feed-pill.resolved { background: rgba(29,158,117,0.12); color: var(--teal); }
+
+  .note-bar { font-size: 12px; color: var(--text-sec); background: var(--bg); border: 1px solid var(--border); border-radius: 9px; padding: 10px 13px; margin-bottom: 16px; line-height: 1.5; }
+  .note-bar strong { color: var(--text); }
+
+  .field-label { font-size: 14px; font-weight: 600; margin: 16px 0 7px; }
+
+  .ai-footer { max-width: 680px; margin: 28px auto 0; padding: 0 24px; }
+  .ai-footer .inner { border-top: 1px solid var(--border); padding-top: 18px; font-size: 12px; color: var(--text-sec); line-height: 1.6; }
+  .ai-footer strong { color: var(--text); }
+
+  @media (max-width: 600px) {
+    .wrap { padding: 22px 16px; }
+    .app-name { font-size: 24px; }
+    .fallback-grid, .always-grid { grid-template-columns: 1fr; }
+    .key-row { flex-direction: column; }
+    .key-save-btn { padding: 12px; }
+    .controls > * { min-width: 100%; }
+    .ai-footer { padding: 0 16px; }
+  }
+</style>
+</head>
+<body>
+  <div class="top-bar"></div>
+
+  <div class="wrap">
+    <header>
+      <div class="app-name">CrisisConnect</div>
+      <div class="tagline">Bangalore crisis support — plain language, real options, right now</div>
+    </header>
+
+    <!-- Controls: API key + language -->
+    <div class="controls">
+      <div style="flex:1;">
+        <div class="key-box" id="keyBox">
+          <label for="apiKey">Groq API Key (free)</label>
+          <div class="key-row">
+            <input type="password" id="apiKey" placeholder="gsk_..." autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="200" />
+            <button class="key-save-btn" id="keySaveBtn">Connect</button>
+          </div>
+          <div class="key-hint">Free key at <a href="https://console.groq.com/keys" target="_blank" rel="noopener">console.groq.com/keys</a> — no card needed.</div>
+        </div>
+        <div class="connected-badge" id="connectedBadge">
+          <span class="dot"></span> Connected
+          <button id="changeKeyBtn">change</button>
+        </div>
+      </div>
+      <div class="lang-box">
+        <label for="langSelect">Language for translation &amp; narration</label>
+        <select id="langSelect">
+          <option value="en" data-native="English" data-speech="en-IN">English</option>
+          <option value="hi" data-native="हिंदी" data-speech="hi-IN">हिंदी — Hindi</option>
+          <option value="kn" data-native="ಕನ್ನಡ" data-speech="kn-IN">ಕನ್ನಡ — Kannada</option>
+          <option value="ta" data-native="தமிழ்" data-speech="ta-IN">தமிழ் — Tamil</option>
+          <option value="te" data-native="తెలుగు" data-speech="te-IN">తెలుగు — Telugu</option>
+          <option value="ur" data-native="اردو" data-speech="ur-IN">اردو — Urdu</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs" id="tabs">
+      <button class="tab-btn active" data-tab="help">🆘 Find Help</button>
+      <button class="tab-btn" data-tab="notice">📋 Check a Notice</button>
+      <button class="tab-btn" data-tab="vault">🗂 Vault<span class="tab-badge" id="vaultBadge">0</span></button>
+      <button class="tab-btn" data-tab="report">📷 Report Hazard</button>
+      <button class="tab-btn" data-tab="community">📣 Community<span class="tab-badge" id="commBadge">0</span></button>
+    </div>
+
+    <!-- ============ PANEL: FIND HELP ============ -->
+    <div class="panel active" id="panel-help">
+      <div class="big-label">What's happening?</div>
+      <div class="sub-label">Describe your situation. Don't worry about phrasing it correctly — just tell us what you need.</div>
+      <textarea id="crisisInput" rows="4" maxlength="1500" placeholder='e.g. "My house flooded in Koramangala, I have two children and need shelter and food tonight"'></textarea>
+      <div class="inline-err" id="inlineErr">Tell us what's happening first.</div>
+      <div class="row-actions">
+        <button class="btn-primary" id="findBtn" style="flex:2;">Find Help <span aria-hidden="true">→</span></button>
+        <button class="btn-secondary" id="locBtn" style="flex:1; justify-content:center;">📍 Use my location</button>
+      </div>
+      <div class="demos">
+        <button class="demo-btn" data-scenario="My house flooded in Koramangala and I have two young children. We need emergency shelter and food tonight.">🏠 House flooding, need shelter</button>
+        <button class="demo-btn" data-scenario="We have run out of food and my family hasn't eaten properly today. We need food urgently tonight.">🍽 Family needs food tonight</button>
+        <button class="demo-btn" data-scenario="My elderly father fell at home and may have hurt his hip. He is in pain and we need medical help quickly.">🏥 Elderly parent fell, need help</button>
+      </div>
+      <div id="output"></div>
+    </div>
+
+    <!-- ============ PANEL: CHECK A NOTICE ============ -->
+    <div class="panel" id="panel-notice">
+      <div class="big-label">Check a notice or document</div>
+      <div class="sub-label">Photograph any official letter, bill, notice, or message. We'll read it, translate it to your language, tell you if it looks genuine, how important it is, and what to do.</div>
+      <input type="file" id="noticeFile" accept="image/*" capture="environment" hidden />
+      <div class="dropzone" id="noticeDrop">
+        <div class="dz-emoji">📄</div>
+        <div class="dz-main">Tap to take a photo or upload</div>
+        <div class="dz-sub">A notice, letter, bill, SMS screenshot, or any document</div>
+      </div>
+      <img class="preview-img" id="noticePreview" alt="" hidden />
+      <div class="row-actions" id="noticeActions" hidden>
+        <button class="btn-primary" id="analyzeNoticeBtn" style="flex:2;">Analyse this document</button>
+        <button class="btn-secondary" id="noticeResetBtn" style="flex:1; justify-content:center;">Choose another</button>
+      </div>
+      <div id="noticeOutput"></div>
+    </div>
+
+    <!-- ============ PANEL: VAULT ============ -->
+    <div class="panel" id="panel-vault">
+      <div class="big-label">Document vault</div>
+      <div class="sub-label">Saved notices and their deadlines, stored only on this device. Items needing action soon are highlighted.</div>
+      <div class="note-bar">🔒 <strong>Private to this device.</strong> Nothing here is uploaded to any server. Reminders show in-app when you open CrisisConnect.</div>
+      <div id="vaultList"></div>
+    </div>
+
+    <!-- ============ PANEL: REPORT HAZARD ============ -->
+    <div class="panel" id="panel-report">
+      <div class="big-label">Report a hazard</div>
+      <div class="sub-label">Photograph unsafe or incomplete public infrastructure — an open drain, a broken road, a fallen line. We check the photo, then forward it to the civic helpline and alert people nearby.</div>
+      <div class="note-bar" id="reportNote"><strong>Demo:</strong> in this hackathon build, "forwarded to authorities" and "nearby users notified" are simulated on this device. The image &amp; text are screened by AI before anything is shared.</div>
+      <input type="file" id="reportFile" accept="image/*" capture="environment" hidden />
+      <div class="dropzone" id="reportDrop">
+        <div class="dz-emoji">📷</div>
+        <div class="dz-main">Tap to take a photo of the hazard</div>
+        <div class="dz-sub">Pothole, open drain, exposed wiring, collapsed structure…</div>
+      </div>
+      <img class="preview-img" id="reportPreview" alt="" hidden />
+      <div class="field-label">Describe what's wrong</div>
+      <textarea id="reportDesc" rows="3" maxlength="600" placeholder="e.g. Large open drain on the footpath outside the school, no cover, children walk past here"></textarea>
+      <label style="display:flex; align-items:center; gap:9px; margin-top:14px; font-size:14px; cursor:pointer;">
+        <input type="checkbox" id="reportEmergency" style="width:auto;" /> Someone needs <strong>immediate</strong> help here (alerts nearby users)
+      </label>
+      <div class="row-actions">
+        <button class="btn-primary" id="submitReportBtn" style="flex:2;">Check &amp; submit report</button>
+        <button class="btn-secondary" id="reportLocBtn" style="flex:1; justify-content:center;">📍 Add location</button>
+      </div>
+      <div id="reportOutput"></div>
+    </div>
+
+    <!-- ============ PANEL: COMMUNITY ============ -->
+    <div class="panel" id="panel-community">
+      <div class="big-label">Community alerts</div>
+      <div class="sub-label">Hazards and emergencies reported near you. Emergencies are pinned to the top.</div>
+      <div class="note-bar">📣 <strong>Demo feed.</strong> In a full build this is a shared, live feed across devices near you. Here it shows reports made on this device plus seeded examples.</div>
+      <div id="feedList"></div>
+    </div>
+  </div>
+
+  <div class="ai-footer" id="aiFooter">
+    <div class="inner">
+      <strong>About this tool:</strong> CrisisConnect uses AI to match your situation to known support organisations in Bangalore, to read and translate documents, and to screen uploaded images and messages. AI can make mistakes — availability, translations, and legitimacy checks may be wrong. Always confirm with the organisation. This tool does not replace emergency services. For life-threatening emergencies, call <strong>108</strong> immediately. The AI does not decide your eligibility for any service — the organisation decides when you contact them. Reports forwarded to authorities and alerts to nearby users are simulated in this demo build.
+    </div>
+  </div>
+
+<!-- Optional: define your Groq key in config.js (git-ignored) so users never see a key prompt. Absent = manual entry. -->
+<script src="config.js"></script>
+<script>
+  /* ===================== Organisation database ===================== */
+  const ORGANISATIONS = [
+    { name: "BBMP Disaster Relief Centre — South Zone", type: ["displacement","food","flood"], provides: "Emergency shelter, meals, and basic supplies for displaced families", phone: "080-22221188", area: "South Bangalore (Koramangala, BTM, Jayanagar)", availability: "available", lastUpdated: "35 minutes ago", bring: ["Aadhaar card","Any proof of address","Children's documents if applicable"], lat: 12.9352, lng: 77.6245 },
+    { name: "Nightwatch Shelter", type: ["displacement","family_safety","domestic"], provides: "Safe shelter for women, children, and families in crisis", phone: "080-25281177", area: "Central Bangalore", availability: "limited", lastUpdated: "1 hour ago", bring: ["Any ID proof","Essential medicines","No documents required in emergency"], lat: 12.9766, lng: 77.5993 },
+    { name: "Akshaya Patra Foundation", type: ["food"], provides: "Hot meals and food supplies for families in need", phone: "080-30143400", area: "Pan-Bangalore", availability: "available", lastUpdated: "20 minutes ago", bring: ["No documents required","Come between 10am–2pm and 5pm–7pm"], lat: 13.0096, lng: 77.5512 },
+    { name: "Covenant Centre for Development", type: ["displacement","food","flood"], provides: "Emergency relief, shelter referrals, and essential supplies", phone: "080-25541160", area: "North and East Bangalore", availability: "available", lastUpdated: "2 hours ago", bring: ["Aadhaar if available","Not required in emergency"], lat: 13.0250, lng: 77.6400 },
+    { name: "Victoria Hospital Emergency — BBMP", type: ["medical","injury"], provides: "Emergency medical care under Ayushman Bharat / Arogya Karnataka (free for eligible patients)", phone: "080-26703600", area: "Central Bangalore", availability: "available", lastUpdated: "Live", bring: ["Aadhaar card","Ayushman Bharat card if available","Any prior medical records"], lat: 12.9628, lng: 77.5730 },
+    { name: "Bowring & Lady Curzon Hospital", type: ["medical","elderly","injury"], provides: "General emergency, orthopaedic, and elderly care under government schemes", phone: "080-25477979", area: "East Bangalore (Shivajinagar)", availability: "available", lastUpdated: "Live", bring: ["Aadhaar card","Referral letter if from a clinic","Insurance or scheme documents"], lat: 12.9849, lng: 77.6045 },
+    { name: "iCall — Tata Institute of Social Sciences", type: ["mental_health","emotional_crisis"], provides: "Free mental health counselling by trained professionals, available in Kannada and English", phone: "9152987821", area: "Pan-India (phone/online)", availability: "available", lastUpdated: "Live", bring: ["No documents required — just call"], lat: null, lng: null },
+    { name: "Vandrevala Foundation Helpline", type: ["mental_health","emotional_crisis","family_safety"], provides: "24/7 free mental health crisis support in multiple Indian languages", phone: "1860-2662-345", area: "Pan-India (24/7)", availability: "available", lastUpdated: "Live", bring: ["No documents required"], lat: null, lng: null },
+    { name: "Bruhat Bengaluru Mahanagara Palike (BBMP) Helpline", type: ["displacement","flood","utility","civic"], provides: "Civic emergency coordination, flood relief requests, utility failure reporting", phone: "1916", area: "All of Bangalore", availability: "available", lastUpdated: "Live", bring: ["Your address and area name ready to state"], lat: null, lng: null },
+    { name: "Snehi — Emotional Support Helpline", type: ["mental_health","emotional_crisis"], provides: "Volunteer-run emotional support line for people in distress", phone: "044-24640050", area: "Pan-India (phone)", availability: "limited", lastUpdated: "3 hours ago", bring: ["No documents required"], lat: null, lng: null }
+  ];
+
+  /* ===================== Config / state ===================== */
+  const GROQ_URL = "https://api.groq.com/openai/v1/chat/completions";
+  const GROQ_TEXT_MODEL = "llama-3.3-70b-versatile";
+  const GROQ_VISION_MODEL = "meta-llama/llama-4-scout-17b-16e-instruct";
+
+  // ── API key resolution ──
+  // Priority: config.js (window.CRISISCONNECT_KEY) → EMBEDDED_API_KEY → saved on this device → manual entry.
+  // SECURITY: a browser-side key is visible to anyone who loads the page. Keep real keys in config.js
+  // (git-ignored) so they never enter a public repo. Only fill EMBEDDED_API_KEY for a PRIVATE/single-file build.
+  const EMBEDDED_API_KEY = "";
+  const KEY_STORE = "cc_groq_key";
+  let API_KEY = (window.CRISISCONNECT_KEY || EMBEDDED_API_KEY || (function(){ try { return localStorage.getItem(KEY_STORE) || ""; } catch (_) { return ""; } })()).trim();
+  let USER_LOC = null; // {lat, lng}
+  let REPORT_LOC = null;
+
+  const PREFERS_REDUCED_MOTION = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  const VAULT_KEY = "cc_vault";
+  const FEED_KEY = "cc_reports";
+
+  /* ===================== Small helpers ===================== */
+  function $(id) { return document.getElementById(id); }
+
+  function escapeHtml(str) {
+    if (str == null) return "";
+    return String(str).replace(/[&<>"']/g, (c) => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
+  }
+
+  function toast(msg, type) {
+    const t = document.createElement("div");
+    t.className = "toast " + (type || "");
+    t.textContent = msg;
+    document.body.appendChild(t);
+    setTimeout(() => t.remove(), 3500);
+  }
+
+  function currentLang() {
+    const opt = $("langSelect").options[$("langSelect").selectedIndex];
+    return { code: opt.value, name: opt.textContent.split("—")[0].trim(), native: opt.getAttribute("data-native"), speech: opt.getAttribute("data-speech") };
+  }
+
+  function telHref(phone) { return "tel:" + String(phone).replace(/[^0-9+]/g, ""); }
+
+  function load(key) { try { return JSON.parse(localStorage.getItem(key) || "[]"); } catch { return []; } }
+  function save(key, arr) { localStorage.setItem(key, JSON.stringify(arr)); }
+
+  function haversineKm(a, b) {
+    const R = 6371, toRad = (d) => d * Math.PI / 180;
+    const dLat = toRad(b.lat - a.lat), dLng = toRad(b.lng - a.lng);
+    const s = Math.sin(dLat/2)**2 + Math.cos(toRad(a.lat))*Math.cos(toRad(b.lat))*Math.sin(dLng/2)**2;
+    return R * 2 * Math.atan2(Math.sqrt(s), Math.sqrt(1-s));
+  }
+
+  function distanceLabel(org) {
+    if (!USER_LOC || org.lat == null || org.lng == null) return "";
+    const km = haversineKm(USER_LOC, { lat: org.lat, lng: org.lng });
+    return km < 1 ? Math.round(km*1000) + " m away" : km.toFixed(1) + " km away";
+  }
+
+  function orgByName(name) {
+    if (!name) return null;
+    const n = name.toLowerCase();
+    return ORGANISATIONS.find(o => o.name.toLowerCase() === n)
+        || ORGANISATIONS.find(o => o.name.toLowerCase().includes(n.slice(0, 14)) || n.includes(o.name.toLowerCase().slice(0, 14)));
+  }
+
+  /* ===================== Groq calls ===================== */
+  function apiError(status, detail) {
+    const e = new Error("API error " + status);
+    e.name = "ApiError"; e.status = status; e.detail = detail || "";
+    return e;
+  }
+
+  async function groqChat(opts) {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), opts.timeout || 35000);
+    const body = {
+      model: opts.model || GROQ_TEXT_MODEL,
+      temperature: opts.temperature == null ? 0.4 : opts.temperature,
+      max_tokens: opts.maxTokens || 1024,
+      messages: opts.messages
+    };
+    if (opts.json) body.response_format = { type: "json_object" };
+    let res;
+    try {
+      res = await fetch(GROQ_URL, {
+        method: "POST",
+        headers: { "content-type": "application/json", "authorization": "Bearer " + API_KEY },
+        body: JSON.stringify(body),
+        signal: controller.signal
+      });
+    } finally { clearTimeout(timer); }
+    if (!res.ok) {
+      let detail = "";
+      try { const ej = await res.json(); detail = (ej.error && ej.error.message) || ""; } catch (_) {}
+      throw apiError(res.status, detail);
+    }
+    const data = await res.json();
+    return (data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content) || "";
+  }
+
+  function parseJsonLoose(text) {
+    let s = String(text).trim();
+    if (s.startsWith("```")) s = s.replace(/^```(?:json)?\s*/i, "").replace(/```\s*$/, "").trim();
+    try { return JSON.parse(s); } catch (_) {}
+    const a = s.indexOf("{"), b = s.lastIndexOf("}");
+    if (a >= 0 && b > a) { try { return JSON.parse(s.slice(a, b + 1)); } catch (_) {} }
+    const pe = new Error("parse failed"); pe.name = "ParseError"; throw pe;
+  }
+
+  function friendlyError(err) {
+    if (err && err.name === "AbortError") return "The request took too long. Check your connection and try again — or call 108 / 1916 directly right now.";
+    if (err && err.name === "ParseError") return "We got a response but couldn't read it. Please try again.";
+    if (err && err.name === "ApiError") {
+      let msg;
+      if (err.status === 401 || err.status === 403) msg = 'Your API key was rejected. Use a Groq key that starts with "gsk_" (free at console.groq.com/keys).';
+      else if (err.status === 400 || err.status === 404) msg = "The request or model wasn't accepted (the free model may have changed).";
+      else if (err.status === 429) msg = "Free-tier rate limit reached. Wait about a minute, then try again.";
+      else msg = "The AI service returned an error (" + err.status + ").";
+      if (err.detail) msg += " — " + err.detail;
+      return msg;
+    }
+    return "Couldn't reach the AI service. Check your internet connection and try again.";
+  }
+
+  function requireKey() {
+    if (API_KEY) return true;
+    $("keyBox").style.display = "block";
+    $("connectedBadge").style.display = "none";
+    $("apiKey").focus();
+    $("apiKey").classList.add("shake");
+    setTimeout(() => $("apiKey").classList.remove("shake"), 450);
+    toast("Connect your free Groq key first", "error");
+    return false;
+  }
+
+  /* ===================== Translation & narration ===================== */
+  async function translateText(plain) {
+    const lang = currentLang();
+    if (lang.code === "en") return plain;
+    const out = await groqChat({
+      temperature: 0.2, maxTokens: 1300,
+      messages: [
+        { role: "system", content: "You are a precise translator for low-literacy readers. Translate the text into " + lang.name + " (" + lang.native + "). Keep it simple and clear. Do NOT change phone numbers, names of organisations, or amounts. Return ONLY the translated text — no notes, no preamble." },
+        { role: "user", content: plain }
+      ]
+    });
+    return out.trim();
+  }
+
+  let voicesReady = false;
+  function loadVoices() { voicesReady = (window.speechSynthesis && speechSynthesis.getVoices().length > 0); }
+  if (window.speechSynthesis) { loadVoices(); speechSynthesis.onvoiceschanged = loadVoices; }
+
+  function narrate(text) {
+    if (!("speechSynthesis" in window)) { toast("Narration isn't supported on this browser", "error"); return; }
+    speechSynthesis.cancel();
+    const lang = currentLang();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = lang.speech; u.rate = 0.95;
+    const voices = speechSynthesis.getVoices();
+    const v = voices.find(v => v.lang === lang.speech) || voices.find(v => v.lang && v.lang.startsWith(lang.code));
+    if (v) u.voice = v;
+    else if (lang.code !== "en") toast("No " + lang.name + " voice installed — reading in the device's default voice", "");
+    speechSynthesis.speak(u);
+  }
+  function stopNarration() { if ("speechSynthesis" in window) speechSynthesis.cancel(); }
+
+  // Attaches Translate + Listen buttons that act on a plain-text version of a result
+  function wireTranslateBlock(containerEl, plainTextFn) {
+    const panel = containerEl.querySelector("[data-translate-panel]");
+    const tbtn = containerEl.querySelector("[data-translate-btn]");
+    const lbtn = containerEl.querySelector("[data-listen-btn]");
+    if (tbtn) tbtn.addEventListener("click", async () => {
+      const lang = currentLang();
+      if (lang.code === "en") { toast("Pick a language above to translate", ""); return; }
+      tbtn.disabled = true; tbtn.innerHTML = '<span class="spinner dark"></span> Translating…';
+      try {
+        const t = await translateText(plainTextFn());
+        panel.querySelector(".tp-body").textContent = t;
+        panel.querySelector("[data-tp-lang]").textContent = lang.native;
+        panel.classList.add("show");
+        panel.dataset.translated = t;
+      } catch (e) { toast(friendlyError(e), "error"); }
+      finally { tbtn.disabled = false; tbtn.innerHTML = "🌐 Translate"; }
+    });
+    if (lbtn) lbtn.addEventListener("click", () => {
+      const translated = panel && panel.dataset.translated;
+      narrate(currentLang().code !== "en" && translated ? translated : plainTextFn());
+    });
+  }
+
+  function translateBlockHtml() {
+    return '<div class="row-actions">' +
+      '<button class="btn-secondary" data-translate-btn>🌐 Translate</button>' +
+      '<button class="btn-secondary" data-listen-btn>🔊 Listen</button>' +
+      '<button class="btn-secondary" data-stop-btn onclick="stopNarration()">⏹ Stop</button>' +
+      '</div>' +
+      '<div class="translate-panel" data-translate-panel>' +
+        '<div class="tp-head"><span>Translated · <span data-tp-lang></span></span></div>' +
+        '<div class="tp-body"></div>' +
+      '</div>';
+  }
+
+  /* ===================== Geolocation ===================== */
+  function getLocation(onDone) {
+    if (!navigator.geolocation) { toast("Location isn't supported on this browser", "error"); return; }
+    toast("Getting your location…", "");
+    navigator.geolocation.getCurrentPosition(
+      (pos) => { onDone({ lat: pos.coords.latitude, lng: pos.coords.longitude }); },
+      (err) => { toast(err.code === 1 ? "Location permission denied" : "Couldn't get your location", "error"); },
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
+    );
+  }
+
+  function nearestAreaHint() {
+    if (!USER_LOC) return "";
+    let best = null, bestKm = Infinity;
+    ORGANISATIONS.forEach(o => { if (o.lat != null) { const km = haversineKm(USER_LOC, {lat:o.lat,lng:o.lng}); if (km < bestKm) { bestKm = km; best = o; } } });
+    return best ? best.area : "";
+  }
+
+  /* ===================== Image helper (downscale) ===================== */
+  function fileToScaledDataURL(file, maxDim, quality) {
+    maxDim = maxDim || 1024; quality = quality || 0.8;
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const img = new Image();
+        img.onload = () => {
+          let w = img.width, h = img.height;
+          if (w > h && w > maxDim) { h = Math.round(h * maxDim / w); w = maxDim; }
+          else if (h > maxDim) { w = Math.round(w * maxDim / h); h = maxDim; }
+          const c = document.createElement("canvas");
+          c.width = w; c.height = h;
+          c.getContext("2d").drawImage(img, 0, 0, w, h);
+          resolve(c.toDataURL("image/jpeg", quality));
+        };
+        img.onerror = () => reject(new Error("Couldn't read that image"));
+        img.src = reader.result;
+      };
+      reader.onerror = () => reject(new Error("Couldn't read that file"));
+      reader.readAsDataURL(file);
+    });
+  }
+
+  async function groqVision(promptText, imageDataUrl) {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 45000);
+    let res;
+    try {
+      res = await fetch(GROQ_URL, {
+        method: "POST",
+        headers: { "content-type": "application/json", "authorization": "Bearer " + API_KEY },
+        body: JSON.stringify({
+          model: GROQ_VISION_MODEL, temperature: 0.2, max_tokens: 1600,
+          messages: [{ role: "user", content: [
+            { type: "text", text: promptText },
+            { type: "image_url", image_url: { url: imageDataUrl } }
+          ] }]
+        }),
+        signal: controller.signal
+      });
+    } finally { clearTimeout(timer); }
+    if (!res.ok) {
+      let detail = ""; try { const ej = await res.json(); detail = (ej.error && ej.error.message) || ""; } catch (_) {}
+      throw apiError(res.status, detail);
+    }
+    const data = await res.json();
+    return (data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content) || "";
+  }
+
+  /* ===================== Tabs ===================== */
+  document.querySelectorAll(".tab-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const tab = btn.dataset.tab;
+      document.querySelectorAll(".tab-btn").forEach(b => b.classList.toggle("active", b === btn));
+      document.querySelectorAll(".panel").forEach(p => p.classList.toggle("active", p.id === "panel-" + tab));
+      stopNarration();
+      if (tab === "vault") renderVault();
+      if (tab === "community") renderFeed();
+    });
+  });
+
+  /* ===================== API key handling ===================== */
+  function showConnected(on) {
+    $("keyBox").style.display = on ? "none" : "block";
+    $("connectedBadge").style.display = on ? "inline-flex" : "none";
+  }
+  function applyKeyState() {
+    if (API_KEY) { $("apiKey").value = API_KEY; showConnected(true); }
+    else showConnected(false);
+  }
+  function saveKey() {
+    const val = $("apiKey").value.trim();
+    if (!val) { $("apiKey").focus(); return; }
+    API_KEY = val;
+    try { localStorage.setItem(KEY_STORE, val); } catch (_) {}
+    showConnected(true);
+    toast("Connected — saved on this device", "success");
+  }
+  $("keySaveBtn").addEventListener("click", saveKey);
+  $("apiKey").addEventListener("keydown", (e) => { if (e.key === "Enter") saveKey(); });
+  $("changeKeyBtn").addEventListener("click", () => {
+    try { localStorage.removeItem(KEY_STORE); } catch (_) {}
+    showConnected(false); $("apiKey").focus();
+  });
+
+  /* ===================== FIND HELP ===================== */
+  const crisisInput = $("crisisInput"), findBtn = $("findBtn"), inlineErr = $("inlineErr"), output = $("output");
+
+  document.querySelectorAll(".demo-btn").forEach(btn => {
+    btn.addEventListener("click", () => { crisisInput.value = btn.getAttribute("data-scenario"); findHelp(); });
+  });
+  findBtn.addEventListener("click", findHelp);
+  crisisInput.addEventListener("keydown", (e) => { if ((e.metaKey || e.ctrlKey) && e.key === "Enter") { e.preventDefault(); findHelp(); } });
+  crisisInput.addEventListener("input", () => { if (inlineErr.style.display === "block") inlineErr.style.display = "none"; });
+
+  $("locBtn").addEventListener("click", () => {
+    getLocation((loc) => {
+      USER_LOC = loc;
+      $("locBtn").innerHTML = "📍 Location on";
+      toast("Location set — results will show distance" + (nearestAreaHint() ? " (near " + nearestAreaHint().split("(")[0].trim() + ")" : ""), "success");
+    });
+  });
+
+  function buildSystemPrompt() {
+    return `You are CrisisConnect, an AI assistant helping people in Bangalore find emergency support. You receive a person's crisis description and a database of local organisations. Your job is to:
+
+1. First, SAFETY CHECK the message. If it is clearly abusive, hateful, harassing, sexual, spam/advertising, a deliberate prank/false alarm, or an attempt to misuse this emergency tool, respond ONLY with: {"blocked": true, "block_reason": "<short reason>"}. IMPORTANT: genuine distress, fear, sadness, or mentions of self-harm are NOT reasons to block — help those people and surface mental-health organisations.
+
+2. Otherwise, classify the crisis into one or more of: displacement, food, medical, elderly, mental_health, emotional_crisis, family_safety, flood, utility, civic, injury, domestic.
+
+3. Select the single BEST matching organisation as the primary recommendation, then 2 more as fallbacks. Prefer "available" over "limited". If the user's location/area is provided, prefer physically closer organisations.
+
+4. Write a "when you call" script — one sentence the person should say.
+
+5. Return ONLY a JSON object with this exact structure (no markdown, no preamble):
+{
+  "crisis_label": "Short label",
+  "crisis_emoji": "Single relevant emoji",
+  "understood": "One plain-language sentence confirming what you understood",
+  "primary": { "name": "...", "provides": "...", "phone": "...", "area": "...", "availability": "available or limited", "lastUpdated": "...", "call_script": "...", "bring": ["item 1","item 2","item 3"] },
+  "fallbacks": [ { "name": "...", "provides": "...", "phone": "...", "area": "...", "availability": "..." }, { "name": "...", "provides": "...", "phone": "...", "area": "...", "availability": "..." } ]
+}
+
+Here is the organisation database:
+
+` + JSON.stringify(ORGANISATIONS.map(({lat,lng,...o}) => o));
+  }
+
+  function setBtnLoading(btn, on, label) {
+    if (on) { btn.disabled = true; btn.dataset.label = btn.innerHTML; btn.innerHTML = '<span class="spinner"></span> ' + (label || "Working…"); }
+    else { btn.disabled = false; btn.innerHTML = btn.dataset.label || label; }
+  }
+
+  async function findHelp() {
+    inlineErr.style.display = "none";
+    if (!requireKey()) return;
+    const message = crisisInput.value.trim();
+    if (!message) { crisisInput.classList.remove("shake"); void crisisInput.offsetWidth; crisisInput.classList.add("shake"); inlineErr.style.display = "block"; return; }
+
+    setBtnLoading(findBtn, true, "Finding the right help…");
+    output.innerHTML = "";
+    try {
+      let userMsg = message;
+      if (USER_LOC) userMsg += "\n\n[User location: approx " + USER_LOC.lat.toFixed(4) + "," + USER_LOC.lng.toFixed(4) + (nearestAreaHint() ? " — near " + nearestAreaHint() : "") + ". Prefer closer organisations.]";
+      const raw = await groqChat({ json: true, temperature: 0.4, maxTokens: 1024, messages: [
+        { role: "system", content: buildSystemPrompt() },
+        { role: "user", content: userMsg }
+      ] });
+      const data = parseJsonLoose(raw);
+      if (data.blocked) { showHelpError("⚠️ " + (data.block_reason || "This message can't be processed here.") + " If this is a real emergency, call 108 or 1916 directly."); return; }
+      renderCard(data);
+    } catch (err) { console.error(err); showHelpError(friendlyError(err)); }
+    finally { setBtnLoading(findBtn, false, 'Find Help <span aria-hidden="true">→</span>'); }
+  }
+
+  function showHelpError(msg) { output.innerHTML = '<div class="card" style="margin-top:26px;"><div class="error-box">' + escapeHtml(msg) + "</div></div>"; }
+
+  function availMarkup(a) {
+    return (a || "").toLowerCase() === "available"
+      ? '<span class="avail available">● Available</span>'
+      : '<span class="avail limited">◐ Limited</span>';
+  }
+
+  function cardPlainText(d) {
+    const p = d.primary || {}, fbs = d.fallbacks || [];
+    let t = (d.crisis_label || "") + ".\n" + (d.understood || "") + "\n\n";
+    t += "Best option: " + (p.name || "") + ". " + (p.provides || "") + ". Phone: " + (p.phone || "") + ". " + (p.area || "") + ".\n";
+    if (p.call_script) t += "When you call, say: " + p.call_script + "\n";
+    if (p.bring && p.bring.length) t += "Bring: " + p.bring.join(", ") + ".\n";
+    if (fbs.length) t += "\nIf that doesn't work: " + fbs.map(f => (f.name || "") + " (" + (f.phone || "") + ")").join("; ") + ".\n";
+    t += "\nAlways available: Ambulance 108, Police 100, BBMP 1916, mental health iCall 9152987821.";
+    return t;
+  }
+
+  function renderCard(d) {
+    const primary = d.primary || {}, fallbacks = Array.isArray(d.fallbacks) ? d.fallbacks : [];
+    const bring = Array.isArray(primary.bring) ? primary.bring : [];
+    const pOrg = orgByName(primary.name), pDist = pOrg ? distanceLabel(pOrg) : "";
+
+    const secA = '<div class="fade-sec" data-step><span class="crisis-pill">' + escapeHtml(d.crisis_emoji || "🆘") + " " + escapeHtml(d.crisis_label || "Crisis") + "</span></div>";
+    const secB = '<div class="fade-sec" data-step><div class="understood">' + escapeHtml(d.understood || "") + "</div></div>";
+
+    const secC = '<div class="fade-sec best-block" data-step>' +
+      '<div class="sec-heading">Best option right now</div>' +
+      '<div class="best-card">' +
+        '<div class="org-name">' + escapeHtml(primary.name || "") + "</div>" +
+        '<div class="org-provides">' + escapeHtml(primary.provides || "") + "</div>" +
+        '<a class="phone-link" href="' + telHref(primary.phone) + '">' + escapeHtml(primary.phone || "") + "</a>" +
+        '<div class="org-area">' + escapeHtml(primary.area || "") + "</div>" +
+        '<div class="meta-row">' + availMarkup(primary.availability) +
+          '<span class="updated">Updated ' + escapeHtml(primary.lastUpdated || "recently") + "</span>" +
+          (pDist ? '<span class="distance">📍 ' + escapeHtml(pDist) + "</span>" : "") +
+        "</div>" +
+        '<div class="call-script"><span class="lead">When you call, say:</span> <span class="phrase">"' + escapeHtml(primary.call_script || "") + '"</span></div>' +
+        '<div class="bring-block"><div class="label">What to bring</div><ul>' + bring.map(b => "<li>" + escapeHtml(b) + "</li>").join("") + "</ul></div>" +
+      "</div></div>";
+
+    const fbCards = fallbacks.slice(0,2).map(f => {
+      const o = orgByName(f.name), dist = o ? distanceLabel(o) : "";
+      return '<div class="fb-card"><div class="fb-name">' + escapeHtml(f.name || "") + "</div>" +
+        '<div class="fb-provides">' + escapeHtml(f.provides || "") + "</div>" +
+        '<a class="fb-phone" href="' + telHref(f.phone) + '">' + escapeHtml(f.phone || "") + "</a>" +
+        availMarkup(f.availability) + (dist ? ' <span class="distance">· ' + escapeHtml(dist) + "</span>" : "") + "</div>";
+    }).join("");
+    const secD = fallbacks.length ? '<div class="fade-sec" data-step><div class="divider"></div><div class="sec-heading">If that doesn\'t work</div><div class="fallback-grid">' + fbCards + "</div></div>" : "";
+
+    const secE = '<div class="fade-sec" data-step><div class="divider"></div><div class="sec-heading">Always available</div><div class="always-grid">' +
+      '<div class="always-item"><div class="num"><a href="tel:108">108</a></div><div class="desc">Ambulance</div></div>' +
+      '<div class="always-item"><div class="num"><a href="tel:100">100</a></div><div class="desc">Police</div></div>' +
+      '<div class="always-item"><div class="num"><a href="tel:1916">1916</a></div><div class="desc">BBMP helpline</div></div>' +
+      '<div class="always-item"><div class="num"><a href="tel:9152987821">iCall 9152987821</a></div><div class="desc">Mental health</div></div>' +
+      "</div></div>";
+
+    const secT = '<div class="fade-sec" data-step>' + translateBlockHtml() + "</div>";
+    const secF = '<div class="fade-sec" data-step><div class="card-notice">Availability shown is based on last reported status. Always call ahead to confirm. This tool does not replace emergency services — call 108 for life-threatening emergencies.</div></div>';
+
+    output.innerHTML = '<div class="card" style="margin-top:26px;">' + secA + secB + secC + secD + secE + secT + secF + "</div>";
+    wireTranslateBlock(output, () => cardPlainText(d));
+
+    const steps = output.querySelectorAll("[data-step]");
+    steps.forEach((el, i) => { if (PREFERS_REDUCED_MOTION) el.classList.add("visible"); else setTimeout(() => el.classList.add("visible"), 150 * (i + 1)); });
+  }
+
+  /* ===================== CHECK A NOTICE ===================== */
+  let noticeImg = null;
+  $("noticeDrop").addEventListener("click", () => $("noticeFile").click());
+  $("noticeFile").addEventListener("change", async (e) => {
+    const f = e.target.files[0]; if (!f) return;
+    try {
+      noticeImg = await fileToScaledDataURL(f);
+      const pv = $("noticePreview"); pv.src = noticeImg; pv.hidden = false;
+      $("noticeDrop").hidden = true; $("noticeActions").hidden = false; $("noticeOutput").innerHTML = "";
+    } catch (err) { toast(err.message, "error"); }
+  });
+  $("noticeResetBtn").addEventListener("click", resetNotice);
+  function resetNotice() {
+    noticeImg = null; $("noticeFile").value = "";
+    $("noticePreview").hidden = true; $("noticeDrop").hidden = false; $("noticeActions").hidden = true; $("noticeOutput").innerHTML = "";
+  }
+
+  $("analyzeNoticeBtn").addEventListener("click", async () => {
+    if (!requireKey() || !noticeImg) return;
+    const btn = $("analyzeNoticeBtn"); setBtnLoading(btn, true, "Reading & checking…");
+    $("noticeOutput").innerHTML = "";
+    const lang = currentLang();
+    const prompt = `You are CrisisConnect's document checker for people in Bangalore, India, who may have low literacy or limited English. Look at this image.
+
+FIRST moderate it. If the image is sexual, violent/graphic, hateful, or clearly NOT a document/notice/letter/bill/official message (e.g. a selfie, meme, random object), return ONLY: {"ok": false, "reason": "<short reason>"}.
+
+Otherwise read the document and return ONLY this JSON (no markdown):
+{
+  "ok": true,
+  "doc_type": "e.g. Government notice / Electricity bill / Court summons / Bank letter / SMS / Scam message",
+  "summary_en": "2-3 plain simple sentences in English explaining what this document says and what it wants",
+  "translation": "The same plain summary translated into ${lang.name} (${lang.native}). If language is English, repeat the English summary.",
+  "legitimacy": "legitimate | suspicious | likely_scam",
+  "legitimacy_reason": "Why — name concrete signs (official letterhead, known dept, vs. asking for OTP/money/urgent threats/odd links)",
+  "red_flags": ["any specific warning signs, empty array if none"],
+  "importance": "high | medium | low",
+  "priority_reason": "Why this importance/priority",
+  "deadline": "ISO date YYYY-MM-DD if the document states or implies a deadline, else null",
+  "advice": ["3-5 short, concrete steps the person should take, in plain language"],
+  "title": "A short 3-6 word title for saving this"
+}`;
+    try {
+      const raw = await groqVision(prompt, noticeImg);
+      const d = parseJsonLoose(raw);
+      if (d.ok === false) { $("noticeOutput").innerHTML = '<div class="card" style="margin-top:18px;"><div class="error-box">⚠️ ' + escapeHtml(d.reason || "This image doesn't look like a document.") + " Please upload a clear photo of the notice or letter.</div></div>"; return; }
+      renderNotice(d);
+    } catch (err) { console.error(err); $("noticeOutput").innerHTML = '<div class="card" style="margin-top:18px;"><div class="error-box">' + escapeHtml(friendlyError(err)) + "</div></div>"; }
+    finally { setBtnLoading(btn, false, "Analyse this document"); }
+  });
+
+  function legitBadge(l) {
+    const m = { legitimate: ["legit","✓ Looks legitimate"], suspicious: ["suspicious","⚠ Suspicious"], likely_scam: ["scam","⛔ Likely scam"] };
+    const x = m[l] || m.suspicious; return '<span class="badge ' + x[0] + '">' + x[1] + "</span>";
+  }
+  function prioBadge(p) {
+    const x = { high: "high", medium: "medium", low: "low" }[p] || "medium";
+    return '<span class="badge prio-' + x + '">Priority: ' + (p || "medium") + "</span>";
+  }
+  function noticePlainText(d) {
+    let t = (d.title || d.doc_type || "Document") + ".\n" + (d.summary_en || "") + "\n";
+    t += "This looks " + (d.legitimacy || "").replace("_"," ") + ". " + (d.legitimacy_reason || "") + "\n";
+    if (d.deadline) t += "Deadline: " + d.deadline + ".\n";
+    if (d.advice && d.advice.length) t += "What to do: " + d.advice.join("; ") + ".";
+    return t;
+  }
+
+  function renderNotice(d) {
+    const lang = currentLang();
+    const flags = (d.red_flags || []).filter(Boolean);
+    const html = '<div class="card" style="margin-top:18px;">' +
+      '<div class="badge-row">' + legitBadge(d.legitimacy) + prioBadge(d.importance) +
+        '<span class="badge prio-low">' + escapeHtml(d.doc_type || "Document") + "</span></div>" +
+      '<div class="kv"><div class="k">What this says</div><div class="v">' + escapeHtml(d.summary_en || "") + "</div></div>" +
+      (lang.code !== "en" && d.translation ? '<div class="kv"><div class="k">' + escapeHtml(lang.native) + '</div><div class="v">' + escapeHtml(d.translation) + "</div></div>" : "") +
+      '<div class="kv"><div class="k">Is it genuine?</div><div class="v">' + escapeHtml(d.legitimacy_reason || "") + "</div></div>" +
+      (flags.length ? '<div class="kv"><div class="k">Warning signs</div><ul class="advice-list" style="margin-top:4px;">' + flags.map(f => '<li style="">' + escapeHtml(f) + "</li>").join("") + "</ul></div>" : "") +
+      (d.deadline ? '<div class="kv"><div class="k">Deadline</div><div class="v">📅 ' + escapeHtml(d.deadline) + "</div></div>" : "") +
+      '<div class="kv"><div class="k">What you should do</div><ul class="advice-list">' + (d.advice || []).map(a => "<li>" + escapeHtml(a) + "</li>").join("") + "</ul></div>" +
+      translateBlockHtml() +
+      '<div class="row-actions"><button class="btn-primary" id="saveVaultBtn" style="flex:1;">🗂 Save to vault</button></div>' +
+      '<div class="card-notice">This legitimacy check is AI-generated and can be wrong. When unsure, verify with the official department directly before paying money or sharing personal details.</div>' +
+    "</div>";
+    $("noticeOutput").innerHTML = html;
+    wireTranslateBlock($("noticeOutput"), () => noticePlainText(d));
+    $("saveVaultBtn").addEventListener("click", () => {
+      const vault = load(VAULT_KEY);
+      vault.unshift({ id: Date.now(), title: d.title || d.doc_type || "Document", doc_type: d.doc_type || "", legitimacy: d.legitimacy, importance: d.importance, deadline: d.deadline || null, summary: d.summary_en || "", translation: d.translation || "", advice: d.advice || [], savedAt: new Date().toISOString() });
+      save(VAULT_KEY, vault);
+      toast("Saved to your vault", "success");
+      updateBadges();
+      $("saveVaultBtn").disabled = true; $("saveVaultBtn").textContent = "✓ Saved";
+    });
+  }
+
+  /* ===================== VAULT ===================== */
+  function deadlineInfo(iso) {
+    if (!iso) return null;
+    const d = new Date(iso + "T00:00:00"); if (isNaN(d)) return null;
+    const days = Math.ceil((d - new Date().setHours(0,0,0,0)) / 86400000);
+    let cls = "", txt;
+    if (days < 0) { cls = "due"; txt = "Overdue by " + Math.abs(days) + " day" + (Math.abs(days)===1?"":"s"); }
+    else if (days === 0) { cls = "due"; txt = "Due today"; }
+    else if (days <= 3) { cls = "soon"; txt = "Due in " + days + " day" + (days===1?"":"s"); }
+    else { txt = "Due " + iso; }
+    return { days, cls, txt };
+  }
+
+  function renderVault() {
+    const vault = load(VAULT_KEY);
+    const el = $("vaultList");
+    if (!vault.length) { el.innerHTML = '<div class="list-empty">No saved documents yet.<br>Use “Check a Notice” to analyse a document, then save it here.</div>'; return; }
+    el.innerHTML = vault.map(v => {
+      const di = deadlineInfo(v.deadline);
+      const urgent = di && di.days <= 3;
+      return '<div class="vault-item ' + (urgent ? "urgent" : "") + '">' +
+        '<div class="vault-top"><div><div class="vault-title">' + escapeHtml(v.title) + "</div>" +
+          '<div class="vault-meta">' + escapeHtml(v.doc_type || "Document") + " · saved " + new Date(v.savedAt).toLocaleDateString() + "</div></div>" +
+          '<button class="icon-btn" data-del="' + v.id + '">delete</button></div>' +
+        '<div class="badge-row" style="margin:10px 0 0;">' + legitBadge(v.legitimacy) + prioBadge(v.importance) + "</div>" +
+        (di ? '<div class="vault-deadline ' + di.cls + '">📅 ' + escapeHtml(di.txt) + "</div>" : "") +
+        '<div style="margin-top:10px;"><button class="icon-btn" data-view="' + v.id + '">view details</button></div>' +
+        '<div class="vault-detail" data-detail="' + v.id + '">' +
+          '<div class="kv"><div class="k">Summary</div><div class="v">' + escapeHtml(v.summary) + "</div></div>" +
+          (v.translation ? '<div class="kv"><div class="k">Translation</div><div class="v">' + escapeHtml(v.translation) + "</div></div>" : "") +
+          (v.advice && v.advice.length ? '<div class="kv"><div class="k">What to do</div><ul class="advice-list">' + v.advice.map(a => "<li>" + escapeHtml(a) + "</li>").join("") + "</ul></div>" : "") +
+        "</div></div>";
+    }).join("");
+    el.querySelectorAll("[data-del]").forEach(b => b.addEventListener("click", () => {
+      save(VAULT_KEY, load(VAULT_KEY).filter(x => x.id != b.dataset.del)); renderVault(); updateBadges(); toast("Deleted", "");
+    }));
+    el.querySelectorAll("[data-view]").forEach(b => b.addEventListener("click", () => {
+      el.querySelector('[data-detail="' + b.dataset.view + '"]').classList.toggle("show");
+    }));
+  }
+
+  /* ===================== REPORT HAZARD ===================== */
+  let reportImg = null;
+  $("reportDrop").addEventListener("click", () => $("reportFile").click());
+  $("reportFile").addEventListener("change", async (e) => {
+    const f = e.target.files[0]; if (!f) return;
+    try {
+      reportImg = await fileToScaledDataURL(f);
+      const pv = $("reportPreview"); pv.src = reportImg; pv.hidden = false; $("reportDrop").hidden = true;
+    } catch (err) { toast(err.message, "error"); }
+  });
+  $("reportLocBtn").addEventListener("click", () => {
+    getLocation((loc) => { REPORT_LOC = loc; $("reportLocBtn").innerHTML = "📍 Location added"; toast("Location added to report", "success"); });
+  });
+
+  $("submitReportBtn").addEventListener("click", async () => {
+    if (!requireKey()) return;
+    if (!reportImg) { toast("Add a photo of the hazard first", "error"); return; }
+    const desc = $("reportDesc").value.trim();
+    const isEmergency = $("reportEmergency").checked;
+    const btn = $("submitReportBtn"); setBtnLoading(btn, true, "Screening photo…");
+    $("reportOutput").innerHTML = "";
+    const prompt = `You are CrisisConnect's hazard-report screener. A user in Bangalore submitted this photo to report unsafe public infrastructure. Their description: "${desc || "(none)"}".
+
+Moderate AND assess. Return ONLY this JSON (no markdown):
+{
+  "appropriate": true/false,   // false if sexual, violent/graphic, hateful, contains identifiable private individuals as the subject, or is spam
+  "relevant": true/false,      // true only if it plausibly shows public infrastructure or a public hazard (road, drain, wiring, building, flooding, garbage, etc.)
+  "reason": "short reason if appropriate=false or relevant=false",
+  "hazard_type": "short label e.g. Open drain / Pothole / Exposed wiring / Flooding / Collapsed structure",
+  "severity": "low | medium | high",
+  "needs_immediate_help": true/false,
+  "public_summary": "1 sentence neutral description suitable to show neighbours and send to the civic body"
+}`;
+    try {
+      const raw = await groqVision(prompt, reportImg);
+      const d = parseJsonLoose(raw);
+      if (d.appropriate === false || d.relevant === false) {
+        $("reportOutput").innerHTML = '<div class="card" style="margin-top:18px;"><div class="error-box">⚠️ ' + escapeHtml(d.reason || "This photo didn't pass screening.") + " Reports must show genuine public infrastructure hazards.</div></div>";
+        return;
+      }
+      const ref = "CC-" + Math.random().toString(36).slice(2, 7).toUpperCase();
+      const report = {
+        id: Date.now(), ref, type: (isEmergency || d.needs_immediate_help) ? "emergency" : "hazard",
+        hazard_type: d.hazard_type || "Hazard", severity: d.severity || "medium",
+        summary: d.public_summary || desc || "Reported hazard", desc,
+        loc: REPORT_LOC, createdAt: new Date().toISOString(), status: "open"
+      };
+      const feed = load(FEED_KEY); feed.unshift(report); save(FEED_KEY, feed);
+      const nearby = 3 + Math.floor(Math.random() * 12);
+      renderReportSuccess(report, nearby);
+      updateBadges();
+      if (report.type === "emergency") toast("🚨 " + nearby + " nearby users notified (demo)", "error");
+      // reset inputs
+      reportImg = null; $("reportFile").value = ""; $("reportPreview").hidden = true; $("reportDrop").hidden = false;
+      $("reportDesc").value = ""; $("reportEmergency").checked = false; REPORT_LOC = null; $("reportLocBtn").innerHTML = "📍 Add location";
+    } catch (err) { console.error(err); $("reportOutput").innerHTML = '<div class="card" style="margin-top:18px;"><div class="error-box">' + escapeHtml(friendlyError(err)) + "</div></div>"; }
+    finally { setBtnLoading(btn, false, "Check &amp; submit report"); }
+  });
+
+  function renderReportSuccess(r, nearby) {
+    const emoji = r.type === "emergency" ? "🚨" : "✅";
+    $("reportOutput").innerHTML = '<div class="card" style="margin-top:18px;">' +
+      '<div class="badge-row">' + (r.type === "emergency" ? '<span class="feed-pill emergency">Emergency</span>' : '<span class="feed-pill hazard">Hazard</span>') +
+        '<span class="badge prio-' + (r.severity==="high"?"high":r.severity==="medium"?"medium":"low") + '">Severity: ' + escapeHtml(r.severity) + "</span></div>" +
+      '<div class="understood" style="margin-top:4px;">' + emoji + " Report submitted</div>" +
+      '<div class="kv"><div class="k">What you reported</div><div class="v">' + escapeHtml(r.hazard_type) + " — " + escapeHtml(r.summary) + "</div></div>" +
+      '<div class="kv"><div class="k">Status</div><div class="v">📨 Forwarded to BBMP civic helpline (1916) · Ref <strong>' + escapeHtml(r.ref) + "</strong> <em>(simulated)</em>" +
+        (r.type === "emergency" ? "<br>🚨 " + nearby + " nearby users alerted <em>(simulated)</em>" : "") +
+        (r.loc ? "<br>📍 Location attached" : "<br>📍 No location attached") + "</div></div>" +
+      '<div class="card-notice">In this demo, forwarding and neighbour alerts are simulated on-device. The photo and text were screened by AI before being added to the community feed.</div>' +
+    "</div>";
+  }
+
+  /* ===================== COMMUNITY FEED ===================== */
+  function seedFeed() {
+    if (localStorage.getItem("cc_seeded")) return;
+    const now = Date.now();
+    const seed = [
+      { id: now-1, ref: "CC-SEED1", type: "hazard", hazard_type: "Open drain", severity: "high", summary: "Uncovered storm drain on the footpath near the bus stop", desc: "", loc: { lat: 12.9352, lng: 77.6245 }, createdAt: new Date(now-3600000*4).toISOString(), status: "open" },
+      { id: now-2, ref: "CC-SEED2", type: "resolved", hazard_type: "Fallen tree", severity: "medium", summary: "Tree branch cleared from the road after last night's rain", desc: "", loc: { lat: 12.9766, lng: 77.5993 }, createdAt: new Date(now-3600000*26).toISOString(), status: "resolved" }
+    ];
+    save(FEED_KEY, seed.concat(load(FEED_KEY)));
+    localStorage.setItem("cc_seeded", "1");
+  }
+
+  function timeAgo(iso) {
+    const s = Math.floor((Date.now() - new Date(iso)) / 1000);
+    if (s < 3600) return Math.max(1, Math.floor(s/60)) + " min ago";
+    if (s < 86400) return Math.floor(s/3600) + " hr ago";
+    return Math.floor(s/86400) + " day(s) ago";
+  }
+
+  function renderFeed() {
+    const feed = load(FEED_KEY).slice().sort((a,b) => {
+      const rank = t => t === "emergency" ? 0 : t === "hazard" ? 1 : 2;
+      return rank(a.type) - rank(b.type) || new Date(b.createdAt) - new Date(a.createdAt);
+    });
+    const el = $("feedList");
+    if (!feed.length) { el.innerHTML = '<div class="list-empty">No community reports yet.</div>'; return; }
+    el.innerHTML = feed.map(r => {
+      const pill = r.type === "emergency" ? '<span class="feed-pill emergency">🚨 Emergency</span>' : r.type === "resolved" ? '<span class="feed-pill resolved">✓ Resolved</span>' : '<span class="feed-pill hazard">⚠ Hazard</span>';
+      const dist = (USER_LOC && r.loc) ? distanceLabel({ lat: r.loc.lat, lng: r.loc.lng }) : "";
+      return '<div class="feed-item ' + (r.type === "emergency" ? "urgent" : "") + '">' +
+        '<div class="badge-row" style="margin-bottom:8px;">' + pill + '<span class="badge prio-low">' + escapeHtml(r.hazard_type) + "</span></div>" +
+        '<div class="vault-title">' + escapeHtml(r.summary) + "</div>" +
+        '<div class="vault-meta">' + timeAgo(r.createdAt) + (dist ? " · 📍 " + escapeHtml(dist) : "") + " · Ref " + escapeHtml(r.ref) + "</div>" +
+        (r.type === "emergency" ? '<div class="vault-deadline due" style="margin-top:8px;">People nearby have been alerted to help <em>(demo)</em></div>' : "") +
+      "</div>";
+    }).join("");
+  }
+
+  /* ===================== Badges / reminders ===================== */
+  function updateBadges() {
+    const vault = load(VAULT_KEY);
+    const dueSoon = vault.filter(v => { const di = deadlineInfo(v.deadline); return di && di.days <= 3; }).length;
+    const vb = $("vaultBadge"); vb.textContent = dueSoon; vb.style.display = dueSoon ? "block" : "none";
+    const emerg = load(FEED_KEY).filter(r => r.type === "emergency").length;
+    const cb = $("commBadge"); cb.textContent = emerg; cb.style.display = emerg ? "block" : "none";
+  }
+
+  function remindOnLoad() {
+    const due = load(VAULT_KEY).filter(v => { const di = deadlineInfo(v.deadline); return di && di.days <= 3; });
+    if (due.length) setTimeout(() => toast("🔔 " + due.length + " document" + (due.length===1?"":"s") + " in your vault need" + (due.length===1?"s":"") + " action soon", "error"), 800);
+  }
+
+  /* ===================== Init ===================== */
+  applyKeyState();
+  seedFeed();
+  updateBadges();
+  remindOnLoad();
+</script>
+</body>
+</html>
