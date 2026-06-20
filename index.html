@@ -9,323 +9,213 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
 <style>
   :root {
-    --bg: #F7F6F2;
-    --coral: #D85A30;
-    --coral-dark: #c14d27;
-    --teal: #1D9E75;
-    --text: #1A1A1A;
-    --text-sec: #6B6B6B;
-    --card: #FFFFFF;
-    --border: #E2E0D8;
-    --amber: #C98A1B;
-    --red: #C0392B;
+    --bg:#F7F6F2; --coral:#D85A30; --coral-dark:#c14d27; --teal:#1D9E75;
+    --text:#1A1A1A; --text-sec:#6B6B6B; --card:#FFFFFF; --border:#E2E0D8; --amber:#C98A1B; --red:#C0392B;
   }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  html, body { background:var(--bg); }
+  body { font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif; color:var(--text); line-height:1.5; -webkit-font-smoothing:antialiased; padding-bottom:60px; }
+  .top-bar { height:4px; background:var(--coral); width:100%; }
+  .wrap { max-width:680px; margin:0 auto; padding:28px 24px; }
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  html, body { background: var(--bg); }
-  body {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-    color: var(--text);
-    line-height: 1.5;
-    -webkit-font-smoothing: antialiased;
-    padding-bottom: 60px;
+  header { margin-bottom:18px; }
+  .app-name { color:var(--coral); font-size:28px; font-weight:700; letter-spacing:-0.02em; }
+  .tagline { color:var(--text-sec); font-size:15px; margin-top:4px; }
+
+  .section { margin-bottom:22px; }
+
+  input[type="text"], input[type="search"], textarea, select {
+    width:100%; font-family:inherit; font-size:15px; color:var(--text); background:var(--bg);
+    border:1px solid var(--border); border-radius:9px; padding:11px 13px; transition:border-color .15s, box-shadow .15s;
   }
+  input:focus, textarea:focus, select:focus { outline:none; border-color:var(--coral); box-shadow:0 0 0 3px rgba(216,90,48,.12); }
+  select { cursor:pointer; }
 
-  .top-bar { height: 4px; background: var(--coral); width: 100%; }
-  .wrap { max-width: 680px; margin: 0 auto; padding: 28px 24px; }
+  /* Language bar */
+  .lang-box { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:14px 16px; margin-bottom:14px; }
+  .lang-box label { display:block; font-size:13px; font-weight:600; color:var(--text-sec); margin-bottom:8px; }
+  .lang-row { display:flex; align-items:center; gap:10px; }
+  .lang-spin { display:none; align-items:center; gap:7px; font-size:13px; color:var(--text-sec); }
 
-  /* Header */
-  header { margin-bottom: 18px; }
-  .app-name { color: var(--coral); font-size: 28px; font-weight: 700; letter-spacing: -0.02em; }
-  .tagline { color: var(--text-sec); font-size: 15px; margin-top: 4px; }
+  /* Location bar */
+  .loc-bar { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:14px 16px; margin-bottom:22px; }
+  .loc-bar.need { border-color:var(--coral); box-shadow:0 0 0 3px rgba(216,90,48,.08); }
+  .loc-status { font-size:14px; font-weight:600; display:flex; align-items:center; gap:8px; }
+  .loc-sub { font-size:12.5px; color:var(--text-sec); margin-top:3px; }
+  .addr-row { display:flex; gap:8px; margin-top:11px; }
+  .addr-row button { flex-shrink:0; }
+  .loc-actions { display:flex; gap:8px; margin-top:10px; flex-wrap:wrap; }
 
-  .section { margin-bottom: 22px; }
+  /* Buttons */
+  .btn-primary { width:100%; background:var(--coral); color:#fff; border:none; border-radius:10px; padding:15px; font-family:inherit; font-size:16px; font-weight:600; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:10px; transition:background .15s, transform .05s; }
+  .btn-primary:hover { background:var(--coral-dark); }
+  .btn-primary:active { transform:scale(.99); }
+  .btn-primary:disabled { opacity:.75; cursor:default; }
+  .btn-secondary { background:transparent; border:1px solid var(--border); border-radius:9px; padding:10px 14px; font-family:inherit; font-size:13px; font-weight:600; color:var(--text); cursor:pointer; display:inline-flex; align-items:center; gap:7px; transition:border-color .15s, background .15s; }
+  .btn-secondary:hover { border-color:var(--coral); background:rgba(216,90,48,.05); }
+  .row-actions { display:flex; flex-wrap:wrap; gap:8px; margin-top:14px; }
 
-  /* Top controls row: key + language */
-  .controls { display: flex; gap: 10px; flex-wrap: wrap; align-items: flex-start; margin-bottom: 20px; }
-  .controls > * { flex: 1; min-width: 220px; }
+  .spinner { width:17px; height:17px; border:2.5px solid rgba(255,255,255,.4); border-top-color:#fff; border-radius:50%; animation:spin .7s linear infinite; }
+  .spinner.dark { border-color:rgba(0,0,0,.15); border-top-color:var(--coral); }
+  @keyframes spin { to { transform:rotate(360deg); } }
 
-  .key-box, .lang-box {
-    background: var(--card); border: 1px solid var(--border);
-    border-radius: 12px; padding: 14px 16px;
-  }
-  .key-box label, .lang-box label {
-    display: block; font-size: 13px; font-weight: 600; color: var(--text-sec); margin-bottom: 8px;
-  }
-  .key-row { display: flex; gap: 10px; }
-  .key-hint { font-size: 12px; color: var(--text-sec); margin-top: 9px; }
-  .key-hint a { color: var(--coral); }
+  .toast { position:fixed; top:20px; right:20px; z-index:1000; background:var(--card); border:1px solid var(--border); border-radius:10px; padding:12px 16px; font-size:14px; font-weight:600; box-shadow:0 6px 24px rgba(0,0,0,.12); display:flex; align-items:center; gap:9px; animation:toastIn .25s ease-out; max-width:320px; }
+  @keyframes toastIn { from { transform:translateX(20px); opacity:0; } to { transform:translateX(0); opacity:1; } }
+  .toast.success { border-color:rgba(29,158,117,.45); color:var(--teal); }
+  .toast.error { border-color:rgba(216,90,48,.45); color:var(--coral); }
+  @media (max-width:600px){ .toast { left:16px; right:16px; top:16px; justify-content:center; } }
 
-  input[type="password"], input[type="text"], textarea, select {
-    width: 100%; font-family: inherit; font-size: 15px; color: var(--text);
-    background: var(--bg); border: 1px solid var(--border); border-radius: 9px;
-    padding: 11px 13px; transition: border-color 0.15s, box-shadow 0.15s;
-  }
-  input:focus, textarea:focus, select:focus {
-    outline: none; border-color: var(--coral); box-shadow: 0 0 0 3px rgba(216,90,48,0.12);
-  }
-  select { cursor: pointer; }
-
-  .key-save-btn {
-    flex-shrink: 0; background: var(--text); color: #fff; border: none; border-radius: 9px;
-    padding: 0 18px; font-family: inherit; font-size: 14px; font-weight: 600; cursor: pointer; transition: opacity 0.15s;
-  }
-  .key-save-btn:hover { opacity: 0.85; }
-
-  .connected-badge {
-    display: none; align-items: center; gap: 7px;
-    background: rgba(29,158,117,0.1); border: 1px solid rgba(29,158,117,0.3);
-    color: var(--teal); font-size: 13px; font-weight: 600; padding: 8px 14px;
-    border-radius: 999px; width: fit-content;
-  }
-  .connected-badge .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--teal); }
-  .connected-badge button {
-    background: none; border: none; color: var(--text-sec); font-size: 12px; cursor: pointer;
-    margin-left: 4px; text-decoration: underline; font-family: inherit;
-  }
+  @media (prefers-reduced-motion:reduce){ .fade-sec,.panel { transition:none; animation:none; } .toast { animation:none; } .shake { animation:none; } }
 
   /* Tabs */
-  .tabs {
-    display: flex; gap: 6px; overflow-x: auto; padding-bottom: 4px;
-    margin-bottom: 22px; border-bottom: 1px solid var(--border);
-    -webkit-overflow-scrolling: touch;
-  }
-  .tab-btn {
-    flex-shrink: 0; background: transparent; border: none; border-bottom: 2px solid transparent;
-    padding: 10px 12px; font-family: inherit; font-size: 14px; font-weight: 600; color: var(--text-sec);
-    cursor: pointer; transition: color 0.15s, border-color 0.15s; position: relative; white-space: nowrap;
-  }
-  .tab-btn:hover { color: var(--text); }
-  .tab-btn.active { color: var(--coral); border-bottom-color: var(--coral); }
-  .tab-badge {
-    display: none; position: absolute; top: 4px; right: 2px; min-width: 16px; height: 16px;
-    background: var(--coral); color: #fff; font-size: 10px; font-weight: 700; border-radius: 999px;
-    padding: 0 4px; line-height: 16px; text-align: center;
-  }
+  .tabs { display:flex; gap:6px; overflow-x:auto; padding-bottom:4px; margin-bottom:22px; border-bottom:1px solid var(--border); -webkit-overflow-scrolling:touch; }
+  .tab-btn { flex-shrink:0; background:transparent; border:none; border-bottom:2px solid transparent; padding:10px 12px; font-family:inherit; font-size:14px; font-weight:600; color:var(--text-sec); cursor:pointer; transition:color .15s, border-color .15s; position:relative; white-space:nowrap; display:inline-flex; align-items:center; gap:5px; }
+  .tab-btn:hover { color:var(--text); }
+  .tab-btn.active { color:var(--coral); border-bottom-color:var(--coral); }
+  .tab-badge { display:none; min-width:16px; height:16px; background:var(--coral); color:#fff; font-size:10px; font-weight:700; border-radius:999px; padding:0 4px; line-height:16px; text-align:center; }
 
-  .panel { display: none; animation: fadeIn 0.3s ease-out both; }
-  .panel.active { display: block; }
-  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+  .panel { display:none; animation:fadeIn .3s ease-out both; }
+  .panel.active { display:block; }
+  @keyframes fadeIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
 
-  /* Generic */
-  .big-label { font-size: 22px; font-weight: 700; letter-spacing: -0.01em; margin-bottom: 6px; }
-  .sub-label { color: var(--text-sec); font-size: 14px; margin-bottom: 14px; }
-
-  textarea { resize: vertical; min-height: 104px; line-height: 1.55; }
-
-  .shake { animation: shake 0.4s; }
+  .big-label { font-size:22px; font-weight:700; letter-spacing:-0.01em; margin-bottom:6px; }
+  .sub-label { color:var(--text-sec); font-size:14px; margin-bottom:14px; }
+  textarea { resize:vertical; min-height:104px; line-height:1.55; }
+  .shake { animation:shake .4s; }
   @keyframes shake { 0%,100%{transform:translateX(0);} 20%,60%{transform:translateX(-7px);} 40%,80%{transform:translateX(7px);} }
+  .inline-err { display:none; color:var(--coral); font-size:13px; font-weight:500; margin-top:8px; }
 
-  .inline-err { display: none; color: var(--coral); font-size: 13px; font-weight: 500; margin-top: 8px; }
+  .demos { display:flex; flex-wrap:wrap; gap:8px; margin-top:16px; }
+  .demo-btn { background:transparent; border:1px solid var(--border); border-radius:999px; padding:8px 14px; font-family:inherit; font-size:13px; font-weight:500; color:var(--text); cursor:pointer; transition:border-color .15s, background .15s; }
+  .demo-btn:hover { border-color:var(--coral); background:rgba(216,90,48,.05); }
 
-  .btn-primary {
-    width: 100%; background: var(--coral); color: #fff; border: none; border-radius: 10px; padding: 15px;
-    font-family: inherit; font-size: 16px; font-weight: 600; cursor: pointer;
-    display: flex; align-items: center; justify-content: center; gap: 10px;
-    transition: background 0.15s, transform 0.05s;
-  }
-  .btn-primary:hover { background: var(--coral-dark); }
-  .btn-primary:active { transform: scale(0.99); }
-  .btn-primary:disabled { opacity: 0.75; cursor: default; }
+  .card { background:var(--card); border:1px solid var(--border); border-radius:16px; padding:24px; box-shadow:0 2px 18px rgba(0,0,0,.04); margin-top:26px; }
+  .fade-sec { opacity:0; transform:translateY(10px); transition:opacity .45s ease, transform .45s ease; }
+  .fade-sec.visible { opacity:1; transform:translateY(0); }
 
-  .btn-secondary {
-    background: transparent; border: 1px solid var(--border); border-radius: 9px; padding: 10px 14px;
-    font-family: inherit; font-size: 13px; font-weight: 600; color: var(--text); cursor: pointer;
-    display: inline-flex; align-items: center; gap: 7px; transition: border-color 0.15s, background 0.15s;
-  }
-  .btn-secondary:hover { border-color: var(--coral); background: rgba(216,90,48,0.05); }
-  .btn-secondary:disabled { opacity: 0.5; cursor: default; }
+  .crisis-pill { display:inline-flex; align-items:center; gap:7px; background:rgba(216,90,48,.1); color:var(--coral); font-size:14px; font-weight:600; padding:8px 15px; border-radius:999px; }
+  .understood { font-size:19px; font-weight:600; letter-spacing:-0.01em; margin-top:18px; line-height:1.4; }
+  .sec-heading { font-size:12px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--text-sec); margin-bottom:10px; }
 
-  .row-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+  .best-block { margin-top:24px; }
+  .best-card { border:1px solid var(--border); border-left:3px solid var(--teal); border-radius:10px; padding:18px; background:#fff; }
+  .org-name { font-size:18px; font-weight:700; letter-spacing:-0.01em; }
+  .org-sector { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; padding:2px 8px; border-radius:999px; margin-left:8px; vertical-align:middle; }
+  .org-sector.govt { background:rgba(29,158,117,.12); color:var(--teal); }
+  .org-sector.private { background:rgba(201,138,27,.14); color:var(--amber); }
+  .org-sector.ngo { background:rgba(216,90,48,.1); color:var(--coral); }
+  .org-provides { color:var(--text-sec); font-size:14px; margin-top:4px; }
+  .phone-link { display:inline-block; font-size:24px; font-weight:700; color:var(--teal); text-decoration:none; margin:12px 0 4px; letter-spacing:-0.01em; }
+  .phone-link:hover { text-decoration:underline; }
+  .org-area { font-size:13px; color:var(--text-sec); }
+  .meta-row { display:flex; flex-wrap:wrap; align-items:center; gap:14px; margin-top:12px; font-size:13px; }
+  .avail { display:inline-flex; align-items:center; gap:6px; font-weight:600; }
+  .avail.available { color:var(--teal); }
+  .avail.limited { color:var(--amber); }
+  .updated { color:var(--text-sec); }
+  .distance { color:var(--teal); font-weight:600; }
+  .call-script { margin-top:16px; background:rgba(29,158,117,.07); border-radius:9px; padding:13px 15px; font-size:14px; }
+  .call-script .lead { font-weight:700; }
+  .call-script .phrase { font-style:italic; }
+  .kv { margin-top:18px; }
+  .kv .k { font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.05em; color:var(--text-sec); margin-bottom:6px; }
+  .kv .v { font-size:15px; line-height:1.55; white-space:pre-wrap; }
+  .steps { list-style:none; }
+  .steps li { font-size:14.5px; padding:5px 0 5px 26px; position:relative; }
+  .steps li::before { content:"→"; position:absolute; left:0; color:var(--teal); font-weight:700; }
+  .steps.tips li::before { content:"💡"; }
+  .bring-block { margin-top:16px; }
+  .bring-block .label { font-size:13px; font-weight:700; margin-bottom:7px; }
+  .bring-block ul { list-style:none; }
+  .bring-block li { font-size:14px; padding:3px 0 3px 22px; position:relative; }
+  .bring-block li::before { content:"→"; position:absolute; left:0; color:var(--teal); font-weight:700; }
 
-  .spinner { width: 17px; height: 17px; border: 2.5px solid rgba(255,255,255,0.4); border-top-color: #fff; border-radius: 50%; animation: spin 0.7s linear infinite; }
-  .spinner.dark { border-color: rgba(0,0,0,0.15); border-top-color: var(--coral); }
-  @keyframes spin { to { transform: rotate(360deg); } }
+  .fallback-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  .fb-card { border:1px solid var(--border); border-radius:10px; padding:14px; }
+  .fb-name { font-size:15px; font-weight:700; letter-spacing:-0.01em; }
+  .fb-provides { font-size:12.5px; color:var(--text-sec); margin:4px 0 8px; }
+  .fb-phone { display:block; font-size:17px; font-weight:700; color:var(--teal); text-decoration:none; margin-bottom:6px; }
+  .fb-phone:hover { text-decoration:underline; }
 
-  /* Toast */
-  .toast {
-    position: fixed; top: 20px; right: 20px; z-index: 1000; background: var(--card);
-    border: 1px solid var(--border); border-radius: 10px; padding: 12px 16px; font-size: 14px; font-weight: 600;
-    box-shadow: 0 6px 24px rgba(0,0,0,0.12); display: flex; align-items: center; gap: 9px;
-    animation: toastIn 0.25s ease-out; max-width: 320px;
-  }
-  @keyframes toastIn { from { transform: translateX(20px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-  .toast.success { border-color: rgba(29,158,117,0.45); color: var(--teal); }
-  .toast.error { border-color: rgba(216,90,48,0.45); color: var(--coral); }
-  @media (max-width: 600px) { .toast { left: 16px; right: 16px; top: 16px; justify-content: center; } }
+  .always-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  .always-item { background:var(--bg); border:1px solid var(--border); border-radius:9px; padding:12px 14px; }
+  .always-item .num { font-size:17px; font-weight:700; }
+  .always-item .num a { color:var(--coral); text-decoration:none; }
+  .always-item .desc { font-size:12.5px; color:var(--text-sec); margin-top:2px; }
 
-  @media (prefers-reduced-motion: reduce) {
-    .fade-sec, .panel { transition: none; animation: none; }
-    .toast { animation: none; }
-    .shake { animation: none; }
-  }
+  .divider { height:1px; background:var(--border); margin:24px 0; }
+  .card-notice { font-size:12px; color:var(--text-sec); line-height:1.55; margin-top:22px; }
+  .error-box { background:rgba(216,90,48,.07); border:1px solid rgba(216,90,48,.25); border-radius:12px; padding:20px; text-align:center; color:var(--coral); font-size:15px; font-weight:500; }
 
-  /* Demo scenarios */
-  .demos { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
-  .demo-btn {
-    background: transparent; border: 1px solid var(--border); border-radius: 999px; padding: 8px 14px;
-    font-family: inherit; font-size: 13px; font-weight: 500; color: var(--text); cursor: pointer;
-    transition: border-color 0.15s, background 0.15s;
-  }
-  .demo-btn:hover { border-color: var(--coral); background: rgba(216,90,48,0.05); }
+  /* Upload */
+  .dropzone { border:2px dashed var(--border); border-radius:12px; padding:28px 20px; text-align:center; cursor:pointer; transition:border-color .15s, background .15s; background:var(--card); }
+  .dropzone:hover { border-color:var(--coral); background:rgba(216,90,48,.03); }
+  .dropzone .dz-emoji { font-size:30px; }
+  .dropzone .dz-main { font-weight:600; margin-top:8px; }
+  .dropzone .dz-sub { font-size:13px; color:var(--text-sec); margin-top:4px; }
+  .preview-img { max-width:100%; border-radius:10px; border:1px solid var(--border); margin-top:14px; display:block; }
+  .preview-img[hidden] { display:none; }
 
-  /* Output card */
-  #output { margin-top: 26px; }
-  .card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 24px; box-shadow: 0 2px 18px rgba(0,0,0,0.04); }
+  .badge { display:inline-flex; align-items:center; gap:6px; font-size:12.5px; font-weight:700; padding:5px 11px; border-radius:999px; }
+  .badge.legit { background:rgba(29,158,117,.12); color:var(--teal); }
+  .badge.suspicious { background:rgba(201,138,27,.14); color:var(--amber); }
+  .badge.scam { background:rgba(192,57,43,.12); color:var(--red); }
+  .badge.prio-high { background:rgba(192,57,43,.12); color:var(--red); }
+  .badge.prio-medium { background:rgba(201,138,27,.14); color:var(--amber); }
+  .badge.prio-low { background:rgba(107,107,107,.12); color:var(--text-sec); }
+  .badge-row { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:14px; }
 
-  .fade-sec { opacity: 0; transform: translateY(10px); transition: opacity 0.45s ease, transform 0.45s ease; }
-  .fade-sec.visible { opacity: 1; transform: translateY(0); }
+  .med-card { border:1px solid var(--border); border-left:3px solid var(--teal); border-radius:10px; padding:14px; margin-top:10px; }
+  .med-name { font-size:15.5px; font-weight:700; }
+  .med-line { font-size:13.5px; color:var(--text-sec); margin-top:3px; }
+  .med-line b { color:var(--text); font-weight:600; }
 
-  .crisis-pill { display: inline-flex; align-items: center; gap: 7px; background: rgba(216,90,48,0.1); color: var(--coral); font-size: 14px; font-weight: 600; padding: 8px 15px; border-radius: 999px; }
-  .understood { font-size: 19px; font-weight: 600; letter-spacing: -0.01em; margin-top: 18px; line-height: 1.4; }
+  .list-empty { text-align:center; color:var(--text-sec); font-size:14px; padding:30px 10px; }
+  .vault-item, .feed-item { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:16px; margin-bottom:12px; }
+  .vault-item.urgent, .feed-item.urgent { border-left:3px solid var(--red); }
+  .vault-top { display:flex; justify-content:space-between; align-items:flex-start; gap:12px; }
+  .vault-title { font-weight:700; font-size:15.5px; }
+  .vault-meta { font-size:12.5px; color:var(--text-sec); margin-top:3px; }
+  .vault-deadline { font-size:13px; font-weight:600; margin-top:8px; }
+  .vault-deadline.due { color:var(--red); }
+  .vault-deadline.soon { color:var(--amber); }
+  .icon-btn { background:none; border:none; color:var(--text-sec); cursor:pointer; font-size:13px; font-family:inherit; text-decoration:underline; padding:0; }
+  .vault-detail { margin-top:12px; padding-top:12px; border-top:1px solid var(--border); display:none; }
+  .vault-detail.show { display:block; }
+  .feed-pill { display:inline-flex; align-items:center; gap:6px; font-size:11.5px; font-weight:700; padding:3px 9px; border-radius:999px; text-transform:uppercase; letter-spacing:.04em; }
+  .feed-pill.emergency { background:rgba(192,57,43,.12); color:var(--red); }
+  .feed-pill.hazard { background:rgba(201,138,27,.14); color:var(--amber); }
+  .feed-pill.resolved { background:rgba(29,158,117,.12); color:var(--teal); }
+  .feed-pill.help { background:rgba(216,90,48,.1); color:var(--coral); }
 
-  .sec-heading { font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-sec); margin-bottom: 10px; }
+  .note-bar { font-size:12px; color:var(--text-sec); background:var(--bg); border:1px solid var(--border); border-radius:9px; padding:10px 13px; margin-bottom:16px; line-height:1.5; }
+  .field-label { font-size:14px; font-weight:600; margin:16px 0 7px; }
+  .check-row { display:flex; align-items:center; gap:9px; margin-top:14px; font-size:14px; cursor:pointer; }
+  .check-row input { width:auto; }
 
-  .best-block { margin-top: 24px; }
-  .best-card { border: 1px solid var(--border); border-left: 3px solid var(--teal); border-radius: 10px; padding: 18px; background: #fff; }
-  .org-name { font-size: 18px; font-weight: 700; letter-spacing: -0.01em; }
-  .org-provides { color: var(--text-sec); font-size: 14px; margin-top: 4px; }
-  .phone-link { display: inline-block; font-size: 24px; font-weight: 700; color: var(--teal); text-decoration: none; margin: 12px 0 4px; letter-spacing: -0.01em; }
-  .phone-link:hover { text-decoration: underline; }
-  .org-area { font-size: 13px; color: var(--text-sec); }
-  .meta-row { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; margin-top: 12px; font-size: 13px; }
-  .avail { display: inline-flex; align-items: center; gap: 6px; font-weight: 600; }
-  .avail.available { color: var(--teal); }
-  .avail.limited { color: var(--amber); }
-  .updated { color: var(--text-sec); }
-  .distance { color: var(--teal); font-weight: 600; }
+  .ai-footer { max-width:680px; margin:28px auto 0; padding:0 24px; }
+  .ai-footer .inner { border-top:1px solid var(--border); padding-top:18px; font-size:12px; color:var(--text-sec); line-height:1.6; }
 
-  .call-script { margin-top: 16px; background: rgba(29,158,117,0.07); border-radius: 9px; padding: 13px 15px; font-size: 14px; }
-  .call-script .lead { font-weight: 700; }
-  .call-script .phrase { font-style: italic; }
-
-  .bring-block { margin-top: 16px; }
-  .bring-block .label { font-size: 13px; font-weight: 700; margin-bottom: 7px; }
-  .bring-block ul { list-style: none; }
-  .bring-block li { font-size: 14px; padding: 3px 0 3px 22px; position: relative; }
-  .bring-block li::before { content: "→"; position: absolute; left: 0; color: var(--teal); font-weight: 700; }
-
-  .fallback-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-  .fb-card { border: 1px solid var(--border); border-radius: 10px; padding: 14px; }
-  .fb-name { font-size: 15px; font-weight: 700; letter-spacing: -0.01em; }
-  .fb-provides { font-size: 12.5px; color: var(--text-sec); margin: 4px 0 8px; }
-  .fb-phone { display: block; font-size: 17px; font-weight: 700; color: var(--teal); text-decoration: none; margin-bottom: 6px; }
-  .fb-phone:hover { text-decoration: underline; }
-
-  .always-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-  .always-item { background: var(--bg); border: 1px solid var(--border); border-radius: 9px; padding: 12px 14px; }
-  .always-item .num { font-size: 17px; font-weight: 700; }
-  .always-item .num a { color: var(--coral); text-decoration: none; }
-  .always-item .num a:hover { text-decoration: underline; }
-  .always-item .desc { font-size: 12.5px; color: var(--text-sec); margin-top: 2px; }
-
-  .divider { height: 1px; background: var(--border); margin: 24px 0; }
-  .card-notice { font-size: 12px; color: var(--text-sec); line-height: 1.55; margin-top: 22px; }
-
-  /* Translation panel */
-  .translate-panel { margin-top: 16px; background: var(--bg); border: 1px dashed var(--border); border-radius: 10px; padding: 16px; display: none; }
-  .translate-panel.show { display: block; }
-  .translate-panel .tp-head { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-sec); margin-bottom: 8px; display:flex; align-items:center; justify-content:space-between; gap: 10px; }
-  .translate-panel .tp-body { font-size: 15px; line-height: 1.6; white-space: pre-wrap; }
-
-  .error-box { background: rgba(216,90,48,0.07); border: 1px solid rgba(216,90,48,0.25); border-radius: 12px; padding: 20px; text-align: center; color: var(--coral); font-size: 15px; font-weight: 500; }
-
-  /* Upload dropzone */
-  .dropzone {
-    border: 2px dashed var(--border); border-radius: 12px; padding: 28px 20px; text-align: center;
-    cursor: pointer; transition: border-color 0.15s, background 0.15s; background: var(--card);
-  }
-  .dropzone:hover { border-color: var(--coral); background: rgba(216,90,48,0.03); }
-  .dropzone .dz-emoji { font-size: 30px; }
-  .dropzone .dz-main { font-weight: 600; margin-top: 8px; }
-  .dropzone .dz-sub { font-size: 13px; color: var(--text-sec); margin-top: 4px; }
-  .preview-img { max-width: 100%; border-radius: 10px; border: 1px solid var(--border); margin-top: 14px; display: block; }
-
-  /* Analysis result */
-  .badge { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; font-weight: 700; padding: 5px 11px; border-radius: 999px; }
-  .badge.legit { background: rgba(29,158,117,0.12); color: var(--teal); }
-  .badge.suspicious { background: rgba(201,138,27,0.14); color: var(--amber); }
-  .badge.scam { background: rgba(192,57,43,0.12); color: var(--red); }
-  .badge.prio-high { background: rgba(192,57,43,0.12); color: var(--red); }
-  .badge.prio-medium { background: rgba(201,138,27,0.14); color: var(--amber); }
-  .badge.prio-low { background: rgba(107,107,107,0.12); color: var(--text-sec); }
-  .badge-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
-
-  .kv { margin-top: 14px; }
-  .kv .k { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-sec); margin-bottom: 5px; }
-  .kv .v { font-size: 15px; line-height: 1.55; white-space: pre-wrap; }
-  .advice-list { list-style: none; margin-top: 6px; }
-  .advice-list li { font-size: 14.5px; padding: 5px 0 5px 24px; position: relative; }
-  .advice-list li::before { content: "✓"; position: absolute; left: 0; color: var(--teal); font-weight: 700; }
-
-  /* Vault / community list */
-  .list-empty { text-align: center; color: var(--text-sec); font-size: 14px; padding: 30px 10px; }
-  .vault-item, .feed-item {
-    background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; margin-bottom: 12px;
-  }
-  .vault-item.urgent, .feed-item.urgent { border-left: 3px solid var(--red); }
-  .vault-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
-  .vault-title { font-weight: 700; font-size: 15.5px; }
-  .vault-meta { font-size: 12.5px; color: var(--text-sec); margin-top: 3px; }
-  .vault-deadline { font-size: 13px; font-weight: 600; margin-top: 8px; }
-  .vault-deadline.due { color: var(--red); }
-  .vault-deadline.soon { color: var(--amber); }
-  .icon-btn { background: none; border: none; color: var(--text-sec); cursor: pointer; font-size: 13px; font-family: inherit; text-decoration: underline; padding: 0; }
-  .vault-detail { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border); display: none; }
-  .vault-detail.show { display: block; }
-
-  .feed-pill { display:inline-flex; align-items:center; gap:6px; font-size: 11.5px; font-weight: 700; padding: 3px 9px; border-radius: 999px; text-transform: uppercase; letter-spacing: 0.04em; }
-  .feed-pill.emergency { background: rgba(192,57,43,0.12); color: var(--red); }
-  .feed-pill.hazard { background: rgba(201,138,27,0.14); color: var(--amber); }
-  .feed-pill.resolved { background: rgba(29,158,117,0.12); color: var(--teal); }
-
-  .note-bar { font-size: 12px; color: var(--text-sec); background: var(--bg); border: 1px solid var(--border); border-radius: 9px; padding: 10px 13px; margin-bottom: 16px; line-height: 1.5; }
-  .note-bar strong { color: var(--text); }
-
-  .field-label { font-size: 14px; font-weight: 600; margin: 16px 0 7px; }
-
-  .ai-footer { max-width: 680px; margin: 28px auto 0; padding: 0 24px; }
-  .ai-footer .inner { border-top: 1px solid var(--border); padding-top: 18px; font-size: 12px; color: var(--text-sec); line-height: 1.6; }
-  .ai-footer strong { color: var(--text); }
-
-  @media (max-width: 600px) {
-    .wrap { padding: 22px 16px; }
-    .app-name { font-size: 24px; }
-    .fallback-grid, .always-grid { grid-template-columns: 1fr; }
-    .key-row { flex-direction: column; }
-    .key-save-btn { padding: 12px; }
-    .controls > * { min-width: 100%; }
-    .ai-footer { padding: 0 16px; }
+  @media (max-width:600px){
+    .wrap { padding:22px 16px; }
+    .app-name { font-size:24px; }
+    .fallback-grid, .always-grid { grid-template-columns:1fr; }
+    .ai-footer { padding:0 16px; }
   }
 </style>
 </head>
 <body>
   <div class="top-bar"></div>
-
   <div class="wrap">
     <header>
       <div class="app-name">CrisisConnect</div>
-      <div class="tagline">Bangalore crisis support — plain language, real options, right now</div>
+      <div class="tagline" data-i18n>Bangalore crisis support — plain language, real options, right now</div>
     </header>
 
-    <!-- Controls: API key + language -->
-    <div class="controls">
-      <div style="flex:1;">
-        <div class="key-box" id="keyBox">
-          <label for="apiKey">Groq API Key (free)</label>
-          <div class="key-row">
-            <input type="password" id="apiKey" placeholder="gsk_..." autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="200" />
-            <button class="key-save-btn" id="keySaveBtn">Connect</button>
-          </div>
-          <div class="key-hint">Free key at <a href="https://console.groq.com/keys" target="_blank" rel="noopener">console.groq.com/keys</a> — no card needed.</div>
-        </div>
-        <div class="connected-badge" id="connectedBadge">
-          <span class="dot"></span> Connected
-          <button id="changeKeyBtn">change</button>
-        </div>
-      </div>
-      <div class="lang-box">
-        <label for="langSelect">Language for translation &amp; narration</label>
+    <!-- Language -->
+    <div class="lang-box">
+      <label for="langSelect" data-i18n>Language</label>
+      <div class="lang-row">
         <select id="langSelect">
           <option value="en" data-native="English" data-speech="en-IN">English</option>
           <option value="hi" data-native="हिंदी" data-speech="hi-IN">हिंदी — Hindi</option>
@@ -334,829 +224,614 @@
           <option value="te" data-native="తెలుగు" data-speech="te-IN">తెలుగు — Telugu</option>
           <option value="ur" data-native="اردو" data-speech="ur-IN">اردو — Urdu</option>
         </select>
+        <span class="lang-spin" id="langSpin"><span class="spinner dark"></span> <span data-i18n>Translating…</span></span>
+      </div>
+    </div>
+
+    <!-- Location gate -->
+    <div class="loc-bar" id="locBar">
+      <div class="loc-status" id="locStatus">📍 <span data-i18n>Detecting your location…</span></div>
+      <div class="loc-sub" id="locSub" data-i18n>We use your location to find the closest help. You can type an address instead.</div>
+      <div class="addr-row" id="addrRow" style="display:none;">
+        <input type="text" id="addrInput" data-i18n-ph placeholder="Type your area or address, e.g. Koramangala 5th Block" />
+        <button class="btn-secondary" id="addrBtn" data-i18n>Set</button>
+      </div>
+      <div class="loc-actions" id="locActions" style="display:none;">
+        <button class="btn-secondary" id="gpsRetry">📍 <span data-i18n>Use my location</span></button>
+        <button class="btn-secondary" id="addrToggle" data-i18n>Type an address instead</button>
       </div>
     </div>
 
     <!-- Tabs -->
     <div class="tabs" id="tabs">
-      <button class="tab-btn active" data-tab="help">🆘 Find Help</button>
-      <button class="tab-btn" data-tab="notice">📋 Check a Notice</button>
-      <button class="tab-btn" data-tab="vault">🗂 Vault<span class="tab-badge" id="vaultBadge">0</span></button>
-      <button class="tab-btn" data-tab="report">📷 Report Hazard</button>
-      <button class="tab-btn" data-tab="community">📣 Community<span class="tab-badge" id="commBadge">0</span></button>
+      <button class="tab-btn active" data-tab="help"><span>🆘</span> <span data-i18n>Find Help</span></button>
+      <button class="tab-btn" data-tab="notice"><span>📋</span> <span data-i18n>Documents</span></button>
+      <button class="tab-btn" data-tab="vault"><span>🗂</span> <span data-i18n>Vault</span> <span class="tab-badge" id="vaultBadge">0</span></button>
+      <button class="tab-btn" data-tab="report"><span>📷</span> <span data-i18n>Report Hazard</span></button>
+      <button class="tab-btn" data-tab="community"><span>📣</span> <span data-i18n>Community</span> <span class="tab-badge" id="commBadge">0</span></button>
     </div>
 
-    <!-- ============ PANEL: FIND HELP ============ -->
+    <!-- FIND HELP -->
     <div class="panel active" id="panel-help">
-      <div class="big-label">What's happening?</div>
-      <div class="sub-label">Describe your situation. Don't worry about phrasing it correctly — just tell us what you need.</div>
-      <textarea id="crisisInput" rows="4" maxlength="1500" placeholder='e.g. "My house flooded in Koramangala, I have two children and need shelter and food tonight"'></textarea>
-      <div class="inline-err" id="inlineErr">Tell us what's happening first.</div>
-      <div class="row-actions">
-        <button class="btn-primary" id="findBtn" style="flex:2;">Find Help <span aria-hidden="true">→</span></button>
-        <button class="btn-secondary" id="locBtn" style="flex:1; justify-content:center;">📍 Use my location</button>
-      </div>
+      <div class="big-label" data-i18n>What's happening?</div>
+      <div class="sub-label" data-i18n>Describe your situation. Don't worry about phrasing it correctly — just tell us what you need.</div>
+      <textarea id="crisisInput" rows="4" maxlength="1500" data-i18n-ph placeholder='e.g. "My house flooded in Koramangala, I have two children and need shelter and food tonight"'></textarea>
+      <div class="inline-err" id="inlineErr" data-i18n>Tell us what's happening first.</div>
+      <button class="btn-primary" id="findBtn"><span data-i18n>Find Help</span> →</button>
       <div class="demos">
-        <button class="demo-btn" data-scenario="My house flooded in Koramangala and I have two young children. We need emergency shelter and food tonight.">🏠 House flooding, need shelter</button>
-        <button class="demo-btn" data-scenario="We have run out of food and my family hasn't eaten properly today. We need food urgently tonight.">🍽 Family needs food tonight</button>
-        <button class="demo-btn" data-scenario="My elderly father fell at home and may have hurt his hip. He is in pain and we need medical help quickly.">🏥 Elderly parent fell, need help</button>
+        <button class="demo-btn" data-scenario="My house flooded in Koramangala and I have two young children. We need emergency shelter and food tonight."><span data-i18n>🏠 House flooding, need shelter</span></button>
+        <button class="demo-btn" data-scenario="We have run out of food and my family hasn't eaten properly today. We need food urgently tonight."><span data-i18n>🍽 Family needs food tonight</span></button>
+        <button class="demo-btn" data-scenario="My elderly father fell at home and may have hurt his hip. He is in pain and we need medical help quickly."><span data-i18n>🏥 Elderly parent fell, need help</span></button>
       </div>
       <div id="output"></div>
     </div>
 
-    <!-- ============ PANEL: CHECK A NOTICE ============ -->
+    <!-- DOCUMENTS -->
     <div class="panel" id="panel-notice">
-      <div class="big-label">Check a notice or document</div>
-      <div class="sub-label">Photograph any official letter, bill, notice, or message. We'll read it, translate it to your language, tell you if it looks genuine, how important it is, and what to do.</div>
+      <div class="big-label" data-i18n>Understand any document</div>
+      <div class="sub-label" data-i18n>Photograph a notice, bill, letter, court paper, doctor's prescription, or any document. We read it, explain it simply in your language, and tell you what to do.</div>
       <input type="file" id="noticeFile" accept="image/*" capture="environment" hidden />
       <div class="dropzone" id="noticeDrop">
         <div class="dz-emoji">📄</div>
-        <div class="dz-main">Tap to take a photo or upload</div>
-        <div class="dz-sub">A notice, letter, bill, SMS screenshot, or any document</div>
+        <div class="dz-main" data-i18n>Tap to take a photo or upload</div>
+        <div class="dz-sub" data-i18n>Notice, bill, prescription, letter, report — anything</div>
       </div>
       <img class="preview-img" id="noticePreview" alt="" hidden />
       <div class="row-actions" id="noticeActions" hidden>
-        <button class="btn-primary" id="analyzeNoticeBtn" style="flex:2;">Analyse this document</button>
-        <button class="btn-secondary" id="noticeResetBtn" style="flex:1; justify-content:center;">Choose another</button>
+        <button class="btn-primary" id="analyzeNoticeBtn" style="flex:2;"><span data-i18n>Read &amp; explain this</span></button>
+        <button class="btn-secondary" id="noticeResetBtn" style="flex:1; justify-content:center;" data-i18n>Choose another</button>
       </div>
       <div id="noticeOutput"></div>
     </div>
 
-    <!-- ============ PANEL: VAULT ============ -->
+    <!-- VAULT -->
     <div class="panel" id="panel-vault">
-      <div class="big-label">Document vault</div>
-      <div class="sub-label">Saved notices and their deadlines, stored only on this device. Items needing action soon are highlighted.</div>
-      <div class="note-bar">🔒 <strong>Private to this device.</strong> Nothing here is uploaded to any server. Reminders show in-app when you open CrisisConnect.</div>
+      <div class="big-label" data-i18n>Document vault</div>
+      <div class="sub-label" data-i18n>Saved documents and their deadlines, stored only on this device. Items needing action soon are highlighted.</div>
+      <div class="note-bar" data-i18n>Private to this device. Nothing here is uploaded to any server. Reminders show in-app when you open CrisisConnect.</div>
       <div id="vaultList"></div>
     </div>
 
-    <!-- ============ PANEL: REPORT HAZARD ============ -->
+    <!-- REPORT -->
     <div class="panel" id="panel-report">
-      <div class="big-label">Report a hazard</div>
-      <div class="sub-label">Photograph unsafe or incomplete public infrastructure — an open drain, a broken road, a fallen line. We check the photo, then forward it to the civic helpline and alert people nearby.</div>
-      <div class="note-bar" id="reportNote"><strong>Demo:</strong> in this hackathon build, "forwarded to authorities" and "nearby users notified" are simulated on this device. The image &amp; text are screened by AI before anything is shared.</div>
+      <div class="big-label" data-i18n>Report a hazard</div>
+      <div class="sub-label" data-i18n>Photograph unsafe or incomplete public infrastructure. We screen the photo, forward it to the civic helpline, and alert people nearby.</div>
+      <div class="note-bar" data-i18n>Demo: forwarding to authorities and neighbour alerts are simulated on this device. The image and text are screened by AI before anything is shared.</div>
       <input type="file" id="reportFile" accept="image/*" capture="environment" hidden />
       <div class="dropzone" id="reportDrop">
         <div class="dz-emoji">📷</div>
-        <div class="dz-main">Tap to take a photo of the hazard</div>
-        <div class="dz-sub">Pothole, open drain, exposed wiring, collapsed structure…</div>
+        <div class="dz-main" data-i18n>Tap to take a photo of the hazard</div>
+        <div class="dz-sub" data-i18n>Pothole, open drain, exposed wiring, collapsed structure…</div>
       </div>
       <img class="preview-img" id="reportPreview" alt="" hidden />
-      <div class="field-label">Describe what's wrong</div>
-      <textarea id="reportDesc" rows="3" maxlength="600" placeholder="e.g. Large open drain on the footpath outside the school, no cover, children walk past here"></textarea>
-      <label style="display:flex; align-items:center; gap:9px; margin-top:14px; font-size:14px; cursor:pointer;">
-        <input type="checkbox" id="reportEmergency" style="width:auto;" /> Someone needs <strong>immediate</strong> help here (alerts nearby users)
-      </label>
-      <div class="row-actions">
-        <button class="btn-primary" id="submitReportBtn" style="flex:2;">Check &amp; submit report</button>
-        <button class="btn-secondary" id="reportLocBtn" style="flex:1; justify-content:center;">📍 Add location</button>
+      <div class="field-label" data-i18n>Describe what's wrong</div>
+      <textarea id="reportDesc" rows="3" maxlength="600" data-i18n-ph placeholder="e.g. Large open drain on the footpath outside the school, no cover"></textarea>
+      <div class="field-label" data-i18n>Where is it?</div>
+      <div class="addr-row">
+        <input type="text" id="reportAddr" data-i18n-ph placeholder="Address or landmark of the hazard" />
+        <button class="btn-secondary" id="reportLocBtn">📍 <span data-i18n>Use my location</span></button>
       </div>
+      <label class="check-row"><input type="checkbox" id="reportEmergency" /> <span data-i18n>Someone needs immediate help here (alerts nearby users)</span></label>
+      <button class="btn-primary" id="submitReportBtn" style="margin-top:16px;"><span data-i18n>Check &amp; submit report</span></button>
       <div id="reportOutput"></div>
     </div>
 
-    <!-- ============ PANEL: COMMUNITY ============ -->
+    <!-- COMMUNITY -->
     <div class="panel" id="panel-community">
-      <div class="big-label">Community alerts</div>
-      <div class="sub-label">Hazards and emergencies reported near you. Emergencies are pinned to the top.</div>
-      <div class="note-bar">📣 <strong>Demo feed.</strong> In a full build this is a shared, live feed across devices near you. Here it shows reports made on this device plus seeded examples.</div>
+      <div class="big-label" data-i18n>Community alerts</div>
+      <div class="sub-label" data-i18n>Distress calls and hazards reported near you. Emergencies are pinned to the top.</div>
+      <div class="note-bar" data-i18n>Demo feed. In a full build this is a shared live feed across nearby devices. Here it shows reports made on this device plus seeded examples.</div>
       <div id="feedList"></div>
     </div>
   </div>
 
-  <div class="ai-footer" id="aiFooter">
-    <div class="inner">
-      <strong>About this tool:</strong> CrisisConnect uses AI to match your situation to known support organisations in Bangalore, to read and translate documents, and to screen uploaded images and messages. AI can make mistakes — availability, translations, and legitimacy checks may be wrong. Always confirm with the organisation. This tool does not replace emergency services. For life-threatening emergencies, call <strong>108</strong> immediately. The AI does not decide your eligibility for any service — the organisation decides when you contact them. Reports forwarded to authorities and alerts to nearby users are simulated in this demo build.
-    </div>
+  <div class="ai-footer">
+    <div class="inner" data-i18n>About this tool: CrisisConnect uses AI to match your situation to support organisations in Bangalore, to read and translate documents, and to screen uploaded images and messages. AI can make mistakes — availability, translations, and legitimacy checks may be wrong. Always confirm with the organisation. This tool does not replace emergency services. For life-threatening emergencies, call 108 immediately. Reports forwarded to authorities and alerts to nearby users are simulated in this demo build.</div>
   </div>
 
-<!-- Optional: define your Groq key in config.js (git-ignored) so users never see a key prompt. Absent = manual entry. -->
+<!-- Optional Groq key (git-ignored, never in the repo). Absent = the app shows a console hint to the operator. -->
 <script src="config.js"></script>
 <script>
-  /* ===================== Organisation database ===================== */
+  /* ===== Institution database (public + private, Bangalore) ===== */
   const ORGANISATIONS = [
-    { name: "BBMP Disaster Relief Centre — South Zone", type: ["displacement","food","flood"], provides: "Emergency shelter, meals, and basic supplies for displaced families", phone: "080-22221188", area: "South Bangalore (Koramangala, BTM, Jayanagar)", availability: "available", lastUpdated: "35 minutes ago", bring: ["Aadhaar card","Any proof of address","Children's documents if applicable"], lat: 12.9352, lng: 77.6245 },
-    { name: "Nightwatch Shelter", type: ["displacement","family_safety","domestic"], provides: "Safe shelter for women, children, and families in crisis", phone: "080-25281177", area: "Central Bangalore", availability: "limited", lastUpdated: "1 hour ago", bring: ["Any ID proof","Essential medicines","No documents required in emergency"], lat: 12.9766, lng: 77.5993 },
-    { name: "Akshaya Patra Foundation", type: ["food"], provides: "Hot meals and food supplies for families in need", phone: "080-30143400", area: "Pan-Bangalore", availability: "available", lastUpdated: "20 minutes ago", bring: ["No documents required","Come between 10am–2pm and 5pm–7pm"], lat: 13.0096, lng: 77.5512 },
-    { name: "Covenant Centre for Development", type: ["displacement","food","flood"], provides: "Emergency relief, shelter referrals, and essential supplies", phone: "080-25541160", area: "North and East Bangalore", availability: "available", lastUpdated: "2 hours ago", bring: ["Aadhaar if available","Not required in emergency"], lat: 13.0250, lng: 77.6400 },
-    { name: "Victoria Hospital Emergency — BBMP", type: ["medical","injury"], provides: "Emergency medical care under Ayushman Bharat / Arogya Karnataka (free for eligible patients)", phone: "080-26703600", area: "Central Bangalore", availability: "available", lastUpdated: "Live", bring: ["Aadhaar card","Ayushman Bharat card if available","Any prior medical records"], lat: 12.9628, lng: 77.5730 },
-    { name: "Bowring & Lady Curzon Hospital", type: ["medical","elderly","injury"], provides: "General emergency, orthopaedic, and elderly care under government schemes", phone: "080-25477979", area: "East Bangalore (Shivajinagar)", availability: "available", lastUpdated: "Live", bring: ["Aadhaar card","Referral letter if from a clinic","Insurance or scheme documents"], lat: 12.9849, lng: 77.6045 },
-    { name: "iCall — Tata Institute of Social Sciences", type: ["mental_health","emotional_crisis"], provides: "Free mental health counselling by trained professionals, available in Kannada and English", phone: "9152987821", area: "Pan-India (phone/online)", availability: "available", lastUpdated: "Live", bring: ["No documents required — just call"], lat: null, lng: null },
-    { name: "Vandrevala Foundation Helpline", type: ["mental_health","emotional_crisis","family_safety"], provides: "24/7 free mental health crisis support in multiple Indian languages", phone: "1860-2662-345", area: "Pan-India (24/7)", availability: "available", lastUpdated: "Live", bring: ["No documents required"], lat: null, lng: null },
-    { name: "Bruhat Bengaluru Mahanagara Palike (BBMP) Helpline", type: ["displacement","flood","utility","civic"], provides: "Civic emergency coordination, flood relief requests, utility failure reporting", phone: "1916", area: "All of Bangalore", availability: "available", lastUpdated: "Live", bring: ["Your address and area name ready to state"], lat: null, lng: null },
-    { name: "Snehi — Emotional Support Helpline", type: ["mental_health","emotional_crisis"], provides: "Volunteer-run emotional support line for people in distress", phone: "044-24640050", area: "Pan-India (phone)", availability: "limited", lastUpdated: "3 hours ago", bring: ["No documents required"], lat: null, lng: null }
+    // Government hospitals
+    { name:"Victoria Hospital — BMCRI", sector:"govt", type:["medical","injury"], provides:"Free emergency & trauma care under Arogya Karnataka / Ayushman Bharat", phone:"080-26703600", area:"Central (KR Market)", availability:"available", lastUpdated:"Live", bring:["Aadhaar card","Ayushman Bharat card if any","Prior medical records"], lat:12.9628, lng:77.5730 },
+    { name:"Bowring & Lady Curzon Hospital", sector:"govt", type:["medical","elderly","injury"], provides:"Emergency, orthopaedic and elderly care under government schemes", phone:"080-25477979", area:"East (Shivajinagar)", availability:"available", lastUpdated:"Live", bring:["Aadhaar card","Referral letter if any","Scheme documents"], lat:12.9849, lng:77.6045 },
+    { name:"Vani Vilas Hospital", sector:"govt", type:["medical","family_safety","injury"], provides:"Government maternity, women's and children's emergency care", phone:"080-26700810", area:"Central (KR Market)", availability:"available", lastUpdated:"Live", bring:["Aadhaar card","Any pregnancy/health records"], lat:12.9626, lng:77.5740 },
+    { name:"Indira Gandhi Institute of Child Health", sector:"govt", type:["medical","injury"], provides:"Specialist government emergency care for children", phone:"080-26411123", area:"South (Dharmaram)", availability:"available", lastUpdated:"Live", bring:["Child's Aadhaar/birth record","Any prior records"], lat:12.9410, lng:77.5960 },
+    { name:"K C General Hospital", sector:"govt", type:["medical","injury"], provides:"Government general & emergency hospital", phone:"080-23344149", area:"North (Malleshwaram)", availability:"available", lastUpdated:"Live", bring:["Aadhaar card","Scheme documents if any"], lat:13.0030, lng:77.5710 },
+    { name:"Jayanagar General Hospital", sector:"govt", type:["medical","injury"], provides:"Government general & emergency hospital", phone:"080-26563677", area:"South (Jayanagar)", availability:"available", lastUpdated:"Live", bring:["Aadhaar card"], lat:12.9250, lng:77.5938 },
+    { name:"NIMHANS Emergency", sector:"govt", type:["medical","mental_health","emotional_crisis","injury"], provides:"Government neuro & psychiatric emergency care", phone:"080-26995000", area:"South (Hosur Road)", availability:"available", lastUpdated:"Live", bring:["Aadhaar card","Any psychiatric/medical history"], lat:12.9437, lng:77.5965 },
+    // Private hospitals
+    { name:"St. John's Medical College Hospital", sector:"private", type:["medical","injury","elderly"], provides:"24/7 emergency & trauma care (charitable, subsidised options)", phone:"080-22065000", area:"South-East (Koramangala)", availability:"available", lastUpdated:"Live", bring:["ID proof","Insurance if any"], lat:12.9290, lng:77.6210 },
+    { name:"Manipal Hospital", sector:"private", type:["medical","injury","elderly"], provides:"24/7 multi-speciality emergency & ICU", phone:"1800-102-5555", area:"East (Old Airport Road)", availability:"available", lastUpdated:"Live", bring:["ID proof","Insurance card if any"], lat:12.9590, lng:77.6490 },
+    { name:"Fortis Hospital", sector:"private", type:["medical","injury"], provides:"24/7 emergency, cardiac & trauma", phone:"080-66214444", area:"South (Bannerghatta Road)", availability:"available", lastUpdated:"Live", bring:["ID proof","Insurance if any"], lat:12.8920, lng:77.5990 },
+    { name:"Apollo Hospital", sector:"private", type:["medical","injury"], provides:"24/7 emergency & multi-speciality care", phone:"1860-500-1066", area:"South (Bannerghatta Road)", availability:"available", lastUpdated:"Live", bring:["ID proof","Insurance if any"], lat:12.8920, lng:77.5970 },
+    { name:"Narayana Health City", sector:"private", type:["medical","injury"], provides:"24/7 emergency, cardiac & affordable care", phone:"080-71222222", area:"South (Bommasandra)", availability:"available", lastUpdated:"Live", bring:["ID proof","Insurance if any"], lat:12.8030, lng:77.6870 },
+    { name:"Baptist Hospital", sector:"private", type:["medical","injury","elderly"], provides:"24/7 emergency care (charitable trust)", phone:"080-22024700", area:"North (Hebbal)", availability:"available", lastUpdated:"Live", bring:["ID proof"], lat:13.0350, lng:77.5940 },
+    // Shelter / displacement
+    { name:"BBMP Disaster Relief Centre — South Zone", sector:"govt", type:["displacement","food","flood"], provides:"Emergency shelter, meals and supplies for displaced families", phone:"080-22221188", area:"South (Koramangala, BTM, Jayanagar)", availability:"available", lastUpdated:"35 min ago", bring:["Aadhaar card","Any proof of address","Children's documents if any"], lat:12.9352, lng:77.6245 },
+    { name:"Nightwatch Shelter", sector:"ngo", type:["displacement","family_safety","domestic"], provides:"Safe shelter for women, children and families in crisis", phone:"080-25281177", area:"Central", availability:"limited", lastUpdated:"1 hr ago", bring:["Any ID proof","Essential medicines","No documents required in emergency"], lat:12.9766, lng:77.5993 },
+    { name:"Covenant Centre for Development", sector:"ngo", type:["displacement","food","flood"], provides:"Emergency relief, shelter referrals and essential supplies", phone:"080-25541160", area:"North & East", availability:"available", lastUpdated:"2 hr ago", bring:["Aadhaar if available","Not required in emergency"], lat:13.0250, lng:77.6400 },
+    { name:"Don Bosco Nivas", sector:"ngo", type:["displacement","family_safety"], provides:"Shelter & rehabilitation for homeless and migrant families", phone:"080-25497111", area:"Central (Shivajinagar)", availability:"available", lastUpdated:"3 hr ago", bring:["Any ID if available"], lat:12.9970, lng:77.5730 },
+    { name:"Parihar — Family Counselling (City Police)", sector:"govt", type:["family_safety","domestic","emotional_crisis"], provides:"Police-linked counselling & shelter referral for family/domestic crises", phone:"080-22943225", area:"Central", availability:"available", lastUpdated:"Live", bring:["Any ID proof"], lat:12.9870, lng:77.5380 },
+    // Food
+    { name:"Akshaya Patra Foundation", sector:"ngo", type:["food"], provides:"Hot meals and food supplies for families in need", phone:"080-30143400", area:"Pan-Bangalore", availability:"available", lastUpdated:"20 min ago", bring:["No documents required","Come 10am–2pm or 5pm–7pm"], lat:13.0096, lng:77.5512 },
+    { name:"ISKCON Annadana Food Relief", sector:"ngo", type:["food"], provides:"Free cooked meal distribution", phone:"080-23471956", area:"West (Rajajinagar)", availability:"available", lastUpdated:"1 hr ago", bring:["No documents required"], lat:13.0096, lng:77.5510 },
+    { name:"Robin Hood Army — Bengaluru", sector:"ngo", type:["food"], provides:"Volunteer-run food distribution to those in need", phone:"080-00000000", area:"Pan-Bangalore (volunteers)", availability:"limited", lastUpdated:"4 hr ago", bring:["No documents required — message to coordinate"], lat:null, lng:null },
+    // Mental health
+    { name:"iCall — TISS", sector:"ngo", type:["mental_health","emotional_crisis"], provides:"Free professional counselling (Kannada & English)", phone:"9152987821", area:"Phone / online", availability:"available", lastUpdated:"Live", bring:["No documents required — just call"], lat:null, lng:null },
+    { name:"Vandrevala Foundation", sector:"ngo", type:["mental_health","emotional_crisis","family_safety"], provides:"24/7 free mental-health crisis support, many languages", phone:"1860-2662-345", area:"24/7 phone", availability:"available", lastUpdated:"Live", bring:["No documents required"], lat:null, lng:null },
+    { name:"Sahai Helpline", sector:"ngo", type:["mental_health","emotional_crisis"], provides:"Bangalore emotional-distress & suicide-prevention helpline", phone:"080-25497777", area:"Phone (10am–8pm)", availability:"available", lastUpdated:"Live", bring:["No documents required"], lat:null, lng:null },
+    { name:"Parivarthan Counselling", sector:"ngo", type:["mental_health","emotional_crisis"], provides:"Trained-volunteer counselling helpline", phone:"7676602602", area:"Phone (1pm–10pm)", availability:"available", lastUpdated:"Live", bring:["No documents required"], lat:null, lng:null },
+    // Women & child safety
+    { name:"Vanitha Sahayavani — Women's Helpline", sector:"govt", type:["family_safety","domestic","emotional_crisis"], provides:"City police women's helpline: rescue, counselling, FIR help", phone:"1091", area:"All of Bangalore", availability:"available", lastUpdated:"Live", bring:["Any ID if possible — not required in emergency"], lat:12.9760, lng:77.6010 },
+    { name:"Sakhi One Stop Centre", sector:"govt", type:["family_safety","domestic"], provides:"Single-window support for women facing violence: medical, legal, shelter", phone:"181", area:"District hospitals", availability:"available", lastUpdated:"Live", bring:["No documents required in emergency"], lat:12.9626, lng:77.5740 },
+    { name:"Childline", sector:"govt", type:["family_safety","domestic"], provides:"24/7 emergency help for children in distress", phone:"1098", area:"All of India", availability:"available", lastUpdated:"Live", bring:["No documents required"], lat:null, lng:null },
+    // Senior citizens
+    { name:"Elderline — Senior Citizen Helpline", sector:"govt", type:["elderly","emotional_crisis"], provides:"Help for senior citizens: emergencies, pension, abuse, loneliness", phone:"14567", area:"All of India", availability:"available", lastUpdated:"Live", bring:["No documents required"], lat:null, lng:null },
+    { name:"Nightingales Medical Trust", sector:"ngo", type:["elderly","medical"], provides:"Elder care, dementia support, home help & helpline", phone:"080-49467108", area:"Pan-Bangalore", availability:"available", lastUpdated:"Live", bring:["Any ID","Medical records if any"], lat:12.9650, lng:77.5900 },
+    // Civic / utility / disaster
+    { name:"BBMP Helpline", sector:"govt", type:["displacement","flood","utility","civic"], provides:"Civic emergencies, flood relief, garbage, road & drain issues", phone:"1916", area:"All of Bangalore", availability:"available", lastUpdated:"Live", bring:["Your address & area name ready"], lat:null, lng:null },
+    { name:"BESCOM — Electricity", sector:"govt", type:["utility","civic"], provides:"Power failures, exposed wires, electrical hazards", phone:"1912", area:"All of Bangalore", availability:"available", lastUpdated:"Live", bring:["Account number if available"], lat:null, lng:null },
+    { name:"BWSSB — Water", sector:"govt", type:["utility","civic"], provides:"Water supply & sewage emergencies", phone:"1916", area:"All of Bangalore", availability:"available", lastUpdated:"Live", bring:["Connection number if available"], lat:null, lng:null },
+    { name:"Fire & Emergency Services", sector:"govt", type:["injury","flood","utility","civic"], provides:"Fire, rescue and disaster response", phone:"101", area:"All of Bangalore", availability:"available", lastUpdated:"Live", bring:["Clear address & landmark"], lat:null, lng:null },
+    // Police / ambulance
+    { name:"Police Control Room", sector:"govt", type:["family_safety","domestic","civic","injury"], provides:"Police emergency response", phone:"112", area:"All of Bangalore", availability:"available", lastUpdated:"Live", bring:["Clear address & what happened"], lat:null, lng:null },
+    { name:"Ambulance — Arogya Kavacha", sector:"govt", type:["medical","injury"], provides:"Free 24/7 emergency ambulance", phone:"108", area:"All of Karnataka", availability:"available", lastUpdated:"Live", bring:["Clear address & patient details"], lat:null, lng:null },
+    // Legal aid
+    { name:"Karnataka State Legal Services Authority", sector:"govt", type:["legal","civic","family_safety"], provides:"Free legal aid & advice for eligible people", phone:"080-22111714", area:"All of Karnataka", availability:"available", lastUpdated:"Live", bring:["ID proof","Any case/notice documents"], lat:12.9766, lng:77.5993 },
+    // More government hospitals
+    { name:"Sanjay Gandhi Inst. of Trauma & Orthopaedics", sector:"govt", type:["medical","injury"], provides:"Government trauma, accident & orthopaedic emergency care", phone:"080-26564516", area:"South (Jayanagar)", availability:"available", lastUpdated:"Live", bring:["Aadhaar card","Any injury records"], lat:12.9180, lng:77.5840 },
+    { name:"Sri Jayadeva Inst. of Cardiovascular Sciences", sector:"govt", type:["medical","elderly","injury"], provides:"Government heart-attack & cardiac emergency care", phone:"080-22977240", area:"South (Jayanagar 9th Block)", availability:"available", lastUpdated:"Live", bring:["Aadhaar card","Any ECG/cardiac reports"], lat:12.9180, lng:77.5990 },
+    { name:"Kidwai Memorial Inst. of Oncology", sector:"govt", type:["medical"], provides:"Government cancer care & oncology emergencies", phone:"080-26094000", area:"South (Hosur Road)", availability:"available", lastUpdated:"Live", bring:["Aadhaar card","Prior biopsy/scan reports"], lat:12.9430, lng:77.5970 },
+    { name:"Minto Ophthalmic Hospital", sector:"govt", type:["medical","injury"], provides:"Government eye emergency & surgery", phone:"080-26703294", area:"Central (Chamrajpet)", availability:"available", lastUpdated:"Live", bring:["Aadhaar card"], lat:12.9560, lng:77.5740 },
+    { name:"Rajiv Gandhi Inst. of Chest Diseases", sector:"govt", type:["medical"], provides:"Government respiratory, TB & chest emergency care", phone:"080-26631923", area:"South (Jayanagar)", availability:"available", lastUpdated:"Live", bring:["Aadhaar card","Any chest X-ray"], lat:12.9170, lng:77.5950 },
+    { name:"ESIC Model Hospital", sector:"govt", type:["medical","injury"], provides:"Free care for insured workers (ESI) & emergencies", phone:"080-23151831", area:"West (Rajajinagar)", availability:"available", lastUpdated:"Live", bring:["ESI card","Aadhaar card"], lat:12.9920, lng:77.5520 },
+    { name:"C V Raman General Hospital", sector:"govt", type:["medical","injury"], provides:"Government general & emergency hospital", phone:"080-25580111", area:"East (Indiranagar)", availability:"available", lastUpdated:"Live", bring:["Aadhaar card"], lat:12.9780, lng:77.6400 },
+    // More private hospitals
+    { name:"Sakra World Hospital", sector:"private", type:["medical","injury"], provides:"24/7 multi-speciality emergency & trauma", phone:"080-49694969", area:"East (Marathahalli)", availability:"available", lastUpdated:"Live", bring:["ID proof","Insurance if any"], lat:12.9300, lng:77.6850 },
+    { name:"Aster CMI Hospital", sector:"private", type:["medical","injury","elderly"], provides:"24/7 emergency & multi-speciality care", phone:"080-43420100", area:"North (Hebbal)", availability:"available", lastUpdated:"Live", bring:["ID proof","Insurance if any"], lat:13.0480, lng:77.5910 },
+    { name:"M S Ramaiah Memorial Hospital", sector:"private", type:["medical","injury"], provides:"24/7 emergency, trauma & multi-speciality", phone:"080-22183000", area:"North (Mathikere)", availability:"available", lastUpdated:"Live", bring:["ID proof","Insurance if any"], lat:13.0290, lng:77.5650 },
+    { name:"BGS Gleneagles Global Hospital", sector:"private", type:["medical","injury"], provides:"24/7 emergency, transplant & trauma", phone:"080-26625555", area:"West (Kengeri)", availability:"available", lastUpdated:"Live", bring:["ID proof","Insurance if any"], lat:12.9070, lng:77.4980 },
+    { name:"Sagar Hospitals", sector:"private", type:["medical","injury","elderly"], provides:"24/7 emergency & multi-speciality care", phone:"080-42888100", area:"South (Banashankari)", availability:"available", lastUpdated:"Live", bring:["ID proof","Insurance if any"], lat:12.9230, lng:77.5470 },
+    { name:"Hosmat Hospital", sector:"private", type:["medical","injury"], provides:"24/7 accident, trauma & orthopaedic emergency", phone:"080-25593796", area:"Central (Magrath Road)", availability:"available", lastUpdated:"Live", bring:["ID proof","Insurance if any"], lat:12.9620, lng:77.6090 },
+    { name:"Vikram Hospital", sector:"private", type:["medical","injury"], provides:"24/7 emergency, cardiac & neuro care", phone:"080-44288000", area:"Central (Millers Road)", availability:"available", lastUpdated:"Live", bring:["ID proof","Insurance if any"], lat:12.9930, lng:77.5930 },
+    { name:"Mallya Hospital", sector:"private", type:["medical","injury","elderly"], provides:"24/7 emergency & multi-speciality care", phone:"080-22277979", area:"Central (Vittal Mallya Road)", availability:"available", lastUpdated:"Live", bring:["ID proof","Insurance if any"], lat:12.9700, lng:77.5960 },
+    { name:"Rainbow Children's Hospital", sector:"private", type:["medical","injury"], provides:"24/7 children's & neonatal emergency care", phone:"080-66935000", area:"East (Marathahalli)", availability:"available", lastUpdated:"Live", bring:["Child's ID","Insurance if any"], lat:12.9560, lng:77.7010 },
+    { name:"Cloudnine Hospital", sector:"private", type:["medical","family_safety"], provides:"24/7 maternity, newborn & women's emergency", phone:"099728-99728", area:"South (Jayanagar)", availability:"available", lastUpdated:"Live", bring:["ID proof","Any pregnancy records"], lat:12.9280, lng:77.5830 },
+    // Women, child & family
+    { name:"Vimochana — Forum for Women's Rights", sector:"ngo", type:["family_safety","domestic","emotional_crisis"], provides:"Support, counselling & shelter referral for women facing violence", phone:"080-25492781", area:"East (Bangalore)", availability:"available", lastUpdated:"Live", bring:["Any ID if possible"], lat:12.9700, lng:77.6400 },
+    { name:"Santwana — Women in Distress (Govt)", sector:"govt", type:["family_safety","domestic"], provides:"Government rescue & rehabilitation for women in distress", phone:"080-22340016", area:"Central", availability:"available", lastUpdated:"Live", bring:["Any ID if possible"], lat:12.9760, lng:77.5950 },
+    { name:"Enfold India — Child Protection", sector:"ngo", type:["family_safety","domestic"], provides:"Support for children facing abuse; safety & legal guidance", phone:"080-25535852", area:"South (Koramangala)", availability:"available", lastUpdated:"Live", bring:["No documents required"], lat:12.9340, lng:77.6240 },
+    { name:"BOSCO — Children & Youth at Risk", sector:"ngo", type:["displacement","family_safety"], provides:"Rescue & shelter for street children and runaway youth", phone:"080-25492222", area:"Central (Shivajinagar)", availability:"available", lastUpdated:"Live", bring:["No documents required"], lat:12.9790, lng:77.5990 },
+    { name:"APSA — Migrant & Slum Families", sector:"ngo", type:["displacement","food","family_safety"], provides:"Support for migrant, slum & at-risk families and children", phone:"080-25710604", area:"South-East", availability:"available", lastUpdated:"Live", bring:["Any ID if available"], lat:12.9000, lng:77.6300 },
+    // Disability & palliative
+    { name:"Samarthanam Trust for the Disabled", sector:"ngo", type:["elderly","medical","civic"], provides:"Support, rehabilitation & emergency help for persons with disability", phone:"080-26764501", area:"South (J P Nagar)", availability:"available", lastUpdated:"Live", bring:["Disability certificate if any"], lat:12.9270, lng:77.5970 },
+    { name:"Association of People with Disability (APD)", sector:"ngo", type:["elderly","medical"], provides:"Rehabilitation, mobility aids & disability support", phone:"080-25475165", area:"North-East (Lingarajapuram)", availability:"available", lastUpdated:"Live", bring:["Disability certificate if any"], lat:13.0090, lng:77.6260 },
+    { name:"Karunashraya — Palliative Care", sector:"ngo", type:["medical","elderly"], provides:"Free palliative & end-of-life care for cancer patients", phone:"080-28452766", area:"East (Marathahalli)", availability:"available", lastUpdated:"Live", bring:["Medical records"], lat:12.9560, lng:77.7050 },
+    // Mental health
+    { name:"Cadabams Hospitals", sector:"private", type:["mental_health","emotional_crisis"], provides:"Mental-health crisis care, de-addiction & rehabilitation", phone:"9741476476", area:"South (Kanakapura Road)", availability:"available", lastUpdated:"Live", bring:["Any ID","Medical history if any"], lat:12.8600, lng:77.4700 },
+    { name:"Spandana Health Care", sector:"private", type:["mental_health","emotional_crisis"], provides:"Psychiatric hospital & emotional crisis support", phone:"080-25721444", area:"East (Nagavarapalya)", availability:"available", lastUpdated:"Live", bring:["Any ID"], lat:12.9450, lng:77.6500 },
+    { name:"NIMHANS Psychosocial Helpline", sector:"govt", type:["mental_health","emotional_crisis"], provides:"Government toll-free mental-health support line", phone:"14416", area:"Phone (24/7)", availability:"available", lastUpdated:"Live", bring:["No documents required"], lat:null, lng:null },
+    // Senior citizens
+    { name:"Dignity Foundation Bengaluru", sector:"ngo", type:["elderly","emotional_crisis"], provides:"Companionship, helpline & support for senior citizens", phone:"080-25473073", area:"Central", availability:"available", lastUpdated:"Live", bring:["No documents required"], lat:12.9700, lng:77.6200 },
+    // Disaster / cyber / utility helplines
+    { name:"State Disaster Management Helpline", sector:"govt", type:["flood","displacement","civic","utility"], provides:"Karnataka state disaster response & coordination", phone:"1070", area:"All of Karnataka", availability:"available", lastUpdated:"Live", bring:["Clear address & nature of emergency"], lat:null, lng:null },
+    { name:"Cyber Crime Helpline", sector:"govt", type:["civic","legal","family_safety"], provides:"Report online fraud & scams fast to help freeze the money", phone:"1930", area:"All of India", availability:"available", lastUpdated:"Live", bring:["Transaction details & screenshots"], lat:null, lng:null },
+    { name:"LPG Gas Leak Emergency", sector:"govt", type:["utility","injury","civic"], provides:"Cooking-gas leak emergency response", phone:"1906", area:"All of India", availability:"available", lastUpdated:"Live", bring:["Turn off the regulator; do not switch anything on or off"], lat:null, lng:null },
+    { name:"Indian Red Cross — Bangalore", sector:"ngo", type:["medical","food","displacement","flood"], provides:"Blood, first aid, disaster relief & essential supplies", phone:"080-22268435", area:"Central", availability:"available", lastUpdated:"Live", bring:["ID proof if possible"], lat:12.9760, lng:77.5970 },
+    // Kauvery Hospital branches
+    { name:"Kauvery Hospital — Marathahalli", sector:"private", type:["medical","injury","elderly"], provides:"24/7 emergency, trauma & multi-speciality care", phone:"080-69066700", area:"East (Marathahalli, Varthur Road)", availability:"available", lastUpdated:"Live", bring:["ID proof","Insurance if any"], lat:12.9560, lng:77.7010 },
+    { name:"Kauvery Hospital — Electronic City", sector:"private", type:["medical","injury"], provides:"24/7 emergency & multi-speciality care", phone:"080-67226700", area:"South-East (Electronic City)", availability:"available", lastUpdated:"Live", bring:["ID proof","Insurance if any"], lat:12.8450, lng:77.6600 },
+    // Manipal Hospital branches
+    { name:"Manipal Hospital — Whitefield (Varthur Road)", sector:"private", type:["medical","injury","elderly"], provides:"24/7 emergency, trauma & multi-speciality care", phone:"080-25023700", area:"East (Whitefield, Varthur Road)", availability:"available", lastUpdated:"Live", bring:["ID proof","Insurance if any"], lat:12.9698, lng:77.7499 },
+    { name:"Manipal Hospital — Sarjapur Road", sector:"private", type:["medical","injury"], provides:"24/7 emergency & multi-speciality care", phone:"080-44875555", area:"South-East (Sarjapur Road)", availability:"available", lastUpdated:"Live", bring:["ID proof","Insurance if any"], lat:12.9080, lng:77.6870 },
+    { name:"Manipal Hospital — Hebbal", sector:"private", type:["medical","injury"], provides:"24/7 emergency & multi-speciality care", phone:"080-67670101", area:"North (Hebbal)", availability:"available", lastUpdated:"Live", bring:["ID proof","Insurance if any"], lat:13.0480, lng:77.5920 },
+    { name:"Manipal Hospital — Jayanagar", sector:"private", type:["medical","injury","elderly"], provides:"24/7 emergency & multi-speciality care", phone:"080-67363636", area:"South (Jayanagar)", availability:"available", lastUpdated:"Live", bring:["ID proof","Insurance if any"], lat:12.9250, lng:77.5830 },
+    { name:"Manipal Hospital — Yeshwanthpur", sector:"private", type:["medical","injury"], provides:"24/7 emergency & multi-speciality care", phone:"080-66554555", area:"North-West (Yeshwanthpur)", availability:"available", lastUpdated:"Live", bring:["ID proof","Insurance if any"], lat:13.0280, lng:77.5400 },
+    { name:"Manipal Hospital — Malleshwaram", sector:"private", type:["medical","injury"], provides:"24/7 emergency & multi-speciality care", phone:"080-23344461", area:"North (Malleshwaram)", availability:"available", lastUpdated:"Live", bring:["ID proof","Insurance if any"], lat:13.0080, lng:77.5650 },
+    // More east-Bangalore (Whitefield / Varthur / Sarjapur) hospitals
+    { name:"Vydehi Institute of Medical Sciences", sector:"private", type:["medical","injury","elderly"], provides:"24/7 emergency, trauma & teaching hospital (subsidised options)", phone:"080-49069000", area:"East (Whitefield)", availability:"available", lastUpdated:"Live", bring:["ID proof","Insurance if any"], lat:12.9900, lng:77.7500 },
+    { name:"Sri Sathya Sai Inst. of Higher Medical Sciences", sector:"ngo", type:["medical","injury","elderly"], provides:"Completely FREE super-speciality cardiac & neuro care", phone:"080-28004600", area:"East (Whitefield)", availability:"available", lastUpdated:"Live", bring:["ID proof","Any prior medical records"], lat:12.9950, lng:77.7400 },
+    { name:"Aster Whitefield Hospital", sector:"private", type:["medical","injury"], provides:"24/7 emergency & multi-speciality care", phone:"080-66506650", area:"East (Whitefield, Sarjapur Road)", availability:"available", lastUpdated:"Live", bring:["ID proof","Insurance if any"], lat:12.9450, lng:77.7250 },
+    { name:"Cloudnine Hospital — Old Airport Road", sector:"private", type:["medical","family_safety"], provides:"24/7 maternity, newborn & women's emergency", phone:"099728-99728", area:"East (Old Airport Road)", availability:"available", lastUpdated:"Live", bring:["ID proof","Any pregnancy records"], lat:12.9600, lng:77.6500 },
+    { name:"Motherhood Hospital — Whitefield", sector:"private", type:["medical","family_safety"], provides:"24/7 maternity, newborn & children's emergency", phone:"080-67687600", area:"East (Whitefield)", availability:"available", lastUpdated:"Live", bring:["ID proof","Any pregnancy records"], lat:12.9690, lng:77.7400 },
+    { name:"Columbia Asia Hospital — Sarjapur Road", sector:"private", type:["medical","injury"], provides:"24/7 emergency & multi-speciality care", phone:"080-61656262", area:"South-East (Sarjapur Road)", availability:"available", lastUpdated:"Live", bring:["ID proof","Insurance if any"], lat:12.9230, lng:77.6850 }
   ];
 
-  /* ===================== Config / state ===================== */
+  /* ===== Config / state ===== */
   const GROQ_URL = "https://api.groq.com/openai/v1/chat/completions";
   const GROQ_TEXT_MODEL = "llama-3.3-70b-versatile";
   const GROQ_VISION_MODEL = "meta-llama/llama-4-scout-17b-16e-instruct";
-
-  // ── API key resolution ──
-  // Priority: config.js (window.CRISISCONNECT_KEY) → EMBEDDED_API_KEY → saved on this device → manual entry.
-  // SECURITY: a browser-side key is visible to anyone who loads the page. Keep real keys in config.js
-  // (git-ignored) so they never enter a public repo. Only fill EMBEDDED_API_KEY for a PRIVATE/single-file build.
   const EMBEDDED_API_KEY = "";
-  const KEY_STORE = "cc_groq_key";
-  let API_KEY = (window.CRISISCONNECT_KEY || EMBEDDED_API_KEY || (function(){ try { return localStorage.getItem(KEY_STORE) || ""; } catch (_) { return ""; } })()).trim();
-  let USER_LOC = null; // {lat, lng}
-  let REPORT_LOC = null;
+  let API_KEY = (window.CRISISCONNECT_KEY || EMBEDDED_API_KEY || "").trim();
 
-  const PREFERS_REDUCED_MOTION = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let LOCATION = null; // { lat, lng, label, source }
+  const PRM = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const VAULT_KEY = "cc_vault", FEED_KEY = "cc_reports";
 
-  const VAULT_KEY = "cc_vault";
-  const FEED_KEY = "cc_reports";
+  /* ===== Helpers ===== */
+  function $(id){ return document.getElementById(id); }
+  function escapeHtml(s){ if(s==null) return ""; return String(s).replace(/[&<>"']/g,c=>({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c])); }
+  function toast(msg,type){ const t=document.createElement("div"); t.className="toast "+(type||""); t.textContent=msg; document.body.appendChild(t); setTimeout(()=>t.remove(),3500); }
+  function telHref(p){ return "tel:"+String(p).replace(/[^0-9+]/g,""); }
+  function load(k){ try { return JSON.parse(localStorage.getItem(k)||"[]"); } catch { return []; } }
+  function save(k,a){ localStorage.setItem(k, JSON.stringify(a)); }
+  function currentLang(){ const o=$("langSelect").options[$("langSelect").selectedIndex]; return { code:o.value, name:o.textContent.split("—")[0].trim(), native:o.getAttribute("data-native"), speech:o.getAttribute("data-speech") }; }
 
-  /* ===================== Small helpers ===================== */
-  function $(id) { return document.getElementById(id); }
+  function haversineKm(a,b){ const R=6371,r=d=>d*Math.PI/180; const dLat=r(b.lat-a.lat),dLng=r(b.lng-a.lng); const s=Math.sin(dLat/2)**2+Math.cos(r(a.lat))*Math.cos(r(b.lat))*Math.sin(dLng/2)**2; return R*2*Math.atan2(Math.sqrt(s),Math.sqrt(1-s)); }
+  function distanceLabel(org){ if(!LOCATION||LOCATION.lat==null||org.lat==null) return ""; const km=haversineKm(LOCATION,{lat:org.lat,lng:org.lng}); return km<1?Math.round(km*1000)+" m away":km.toFixed(1)+" km away"; }
+  function orgByName(name){ if(!name) return null; const n=name.toLowerCase(); return ORGANISATIONS.find(o=>o.name.toLowerCase()===n) || ORGANISATIONS.find(o=>o.name.toLowerCase().includes(n.slice(0,12))||n.includes(o.name.toLowerCase().slice(0,12))); }
 
-  function escapeHtml(str) {
-    if (str == null) return "";
-    return String(str).replace(/[&<>"']/g, (c) => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
-  }
-
-  function toast(msg, type) {
-    const t = document.createElement("div");
-    t.className = "toast " + (type || "");
-    t.textContent = msg;
-    document.body.appendChild(t);
-    setTimeout(() => t.remove(), 3500);
-  }
-
-  function currentLang() {
-    const opt = $("langSelect").options[$("langSelect").selectedIndex];
-    return { code: opt.value, name: opt.textContent.split("—")[0].trim(), native: opt.getAttribute("data-native"), speech: opt.getAttribute("data-speech") };
-  }
-
-  function telHref(phone) { return "tel:" + String(phone).replace(/[^0-9+]/g, ""); }
-
-  function load(key) { try { return JSON.parse(localStorage.getItem(key) || "[]"); } catch { return []; } }
-  function save(key, arr) { localStorage.setItem(key, JSON.stringify(arr)); }
-
-  function haversineKm(a, b) {
-    const R = 6371, toRad = (d) => d * Math.PI / 180;
-    const dLat = toRad(b.lat - a.lat), dLng = toRad(b.lng - a.lng);
-    const s = Math.sin(dLat/2)**2 + Math.cos(toRad(a.lat))*Math.cos(toRad(b.lat))*Math.sin(dLng/2)**2;
-    return R * 2 * Math.atan2(Math.sqrt(s), Math.sqrt(1-s));
-  }
-
-  function distanceLabel(org) {
-    if (!USER_LOC || org.lat == null || org.lng == null) return "";
-    const km = haversineKm(USER_LOC, { lat: org.lat, lng: org.lng });
-    return km < 1 ? Math.round(km*1000) + " m away" : km.toFixed(1) + " km away";
-  }
-
-  function orgByName(name) {
-    if (!name) return null;
-    const n = name.toLowerCase();
-    return ORGANISATIONS.find(o => o.name.toLowerCase() === n)
-        || ORGANISATIONS.find(o => o.name.toLowerCase().includes(n.slice(0, 14)) || n.includes(o.name.toLowerCase().slice(0, 14)));
-  }
-
-  /* ===================== Groq calls ===================== */
-  function apiError(status, detail) {
-    const e = new Error("API error " + status);
-    e.name = "ApiError"; e.status = status; e.detail = detail || "";
-    return e;
-  }
-
-  async function groqChat(opts) {
-    const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), opts.timeout || 35000);
-    const body = {
-      model: opts.model || GROQ_TEXT_MODEL,
-      temperature: opts.temperature == null ? 0.4 : opts.temperature,
-      max_tokens: opts.maxTokens || 1024,
-      messages: opts.messages
-    };
-    if (opts.json) body.response_format = { type: "json_object" };
+  /* ===== Groq ===== */
+  function apiError(status,detail){ const e=new Error("API error "+status); e.name="ApiError"; e.status=status; e.detail=detail||""; return e; }
+  async function groqChat(opts){
+    if(!API_KEY){ const e=new Error("No API key configured"); e.name="ConfigError"; throw e; }
+    const c=new AbortController(); const t=setTimeout(()=>c.abort(), opts.timeout||35000);
+    const body={ model:opts.model||GROQ_TEXT_MODEL, temperature:opts.temperature==null?0.4:opts.temperature, max_tokens:opts.maxTokens||1024, messages:opts.messages };
+    if(opts.json) body.response_format={ type:"json_object" };
     let res;
-    try {
-      res = await fetch(GROQ_URL, {
-        method: "POST",
-        headers: { "content-type": "application/json", "authorization": "Bearer " + API_KEY },
-        body: JSON.stringify(body),
-        signal: controller.signal
-      });
-    } finally { clearTimeout(timer); }
-    if (!res.ok) {
-      let detail = "";
-      try { const ej = await res.json(); detail = (ej.error && ej.error.message) || ""; } catch (_) {}
-      throw apiError(res.status, detail);
-    }
-    const data = await res.json();
-    return (data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content) || "";
+    try { res=await fetch(GROQ_URL,{ method:"POST", headers:{ "content-type":"application/json", "authorization":"Bearer "+API_KEY }, body:JSON.stringify(body), signal:c.signal }); }
+    finally { clearTimeout(t); }
+    if(!res.ok){ let d=""; try{ const ej=await res.json(); d=(ej.error&&ej.error.message)||""; }catch(_){} throw apiError(res.status,d); }
+    const data=await res.json();
+    return (data.choices&&data.choices[0]&&data.choices[0].message&&data.choices[0].message.content)||"";
   }
-
-  function parseJsonLoose(text) {
-    let s = String(text).trim();
-    if (s.startsWith("```")) s = s.replace(/^```(?:json)?\s*/i, "").replace(/```\s*$/, "").trim();
-    try { return JSON.parse(s); } catch (_) {}
-    const a = s.indexOf("{"), b = s.lastIndexOf("}");
-    if (a >= 0 && b > a) { try { return JSON.parse(s.slice(a, b + 1)); } catch (_) {} }
-    const pe = new Error("parse failed"); pe.name = "ParseError"; throw pe;
+  async function groqVision(promptText,imageDataUrl){
+    if(!API_KEY){ const e=new Error("No API key configured"); e.name="ConfigError"; throw e; }
+    const c=new AbortController(); const t=setTimeout(()=>c.abort(),45000);
+    let res;
+    try { res=await fetch(GROQ_URL,{ method:"POST", headers:{ "content-type":"application/json", "authorization":"Bearer "+API_KEY },
+      body:JSON.stringify({ model:GROQ_VISION_MODEL, temperature:0.2, max_tokens:1700, messages:[{ role:"user", content:[ {type:"text",text:promptText}, {type:"image_url",image_url:{url:imageDataUrl}} ] }] }), signal:c.signal }); }
+    finally { clearTimeout(t); }
+    if(!res.ok){ let d=""; try{ const ej=await res.json(); d=(ej.error&&ej.error.message)||""; }catch(_){} throw apiError(res.status,d); }
+    const data=await res.json();
+    return (data.choices&&data.choices[0]&&data.choices[0].message&&data.choices[0].message.content)||"";
   }
-
-  function friendlyError(err) {
-    if (err && err.name === "AbortError") return "The request took too long. Check your connection and try again — or call 108 / 1916 directly right now.";
-    if (err && err.name === "ParseError") return "We got a response but couldn't read it. Please try again.";
-    if (err && err.name === "ApiError") {
-      let msg;
-      if (err.status === 401 || err.status === 403) msg = 'Your API key was rejected. Use a Groq key that starts with "gsk_" (free at console.groq.com/keys).';
-      else if (err.status === 400 || err.status === 404) msg = "The request or model wasn't accepted (the free model may have changed).";
-      else if (err.status === 429) msg = "Free-tier rate limit reached. Wait about a minute, then try again.";
-      else msg = "The AI service returned an error (" + err.status + ").";
-      if (err.detail) msg += " — " + err.detail;
-      return msg;
-    }
+  function parseJsonLoose(text){ let s=String(text).trim(); if(s.startsWith("```")) s=s.replace(/^```(?:json)?\s*/i,"").replace(/```\s*$/,"").trim(); try{ return JSON.parse(s); }catch(_){} const a=s.indexOf("{"),b=s.lastIndexOf("}"); if(a>=0&&b>a){ try{ return JSON.parse(s.slice(a,b+1)); }catch(_){} } const pe=new Error("parse failed"); pe.name="ParseError"; throw pe; }
+  function friendlyError(err){
+    if(err&&err.name==="ConfigError") return "This app hasn't been set up with an API key yet.";
+    if(err&&err.name==="AbortError") return "The request took too long. Check your connection and try again — or call 108 / 1916 directly.";
+    if(err&&err.name==="ParseError") return "We got a response but couldn't read it. Please try again.";
+    if(err&&err.name==="ApiError"){ let m; if(err.status===401||err.status===403) m="The configured API key was rejected."; else if(err.status===400||err.status===404) m="The request or model wasn't accepted."; else if(err.status===429) m="Rate limit reached. Wait a minute and try again."; else m="The AI service returned an error ("+err.status+")."; if(err.detail) m+=" — "+err.detail; return m; }
     return "Couldn't reach the AI service. Check your internet connection and try again.";
   }
+  function setBtnLoading(btn,on,html){ if(on){ btn.disabled=true; btn.dataset.html=btn.innerHTML; btn.innerHTML='<span class="spinner"></span> '+(html||"Working…"); } else { btn.disabled=false; btn.innerHTML=btn.dataset.html||html; } }
 
-  function requireKey() {
-    if (API_KEY) return true;
-    $("keyBox").style.display = "block";
-    $("connectedBadge").style.display = "none";
-    $("apiKey").focus();
-    $("apiKey").classList.add("shake");
-    setTimeout(() => $("apiKey").classList.remove("shake"), 450);
-    toast("Connect your free Groq key first", "error");
-    return false;
+  /* ===== Full-site translation ===== */
+  // Dynamic labels used inside rendered cards so they can be translated too.
+  const DYN = ["Best option right now","When you call, say:","What to bring","What to do now","Helpful tips","Important details","If that doesn't work","Always available","Ambulance","Police","BBMP helpline","Mental health","What this says","Is it genuine?","Warning signs","Deadline","What you should do","Medicines","Save to vault","Report submitted","What you reported","Status","Summary","Translation","Purpose","How to take","Where to get","Caution","Nearest pharmacies","Finding pharmacies near you…","Ask any licensed pharmacy or a nearby Jan Aushadhi store for the generic versions.","Listen","Find Help","Read & explain this","Check & submit report","Available","Limited","Severity","Priority","Emergency","Help needed","Resolved","Hazard","coming to help","including you","You're on the way","I'm coming to help","You're on the way — the person has been told","No community reports yet."];
+  function t(str){ const lang=currentLang(); if(lang.code==="en") return str; const c=i18nCache(lang.code); return c[str]||str; }
+  function i18nCache(code){ try{ return JSON.parse(localStorage.getItem("cc_i18n_"+code)||"{}"); }catch{ return {}; } }
+  async function translateChunk(strings,name,native){
+    const out=await groqChat({ json:true, temperature:0.1, maxTokens:3200, messages:[
+      { role:"system", content:`You are a translator. Translate each English UI string for a crisis-help website into ${name} (${native}). Keep them short and natural for buttons and labels. Keep phone numbers, brand names and emoji unchanged. Return ONLY a JSON object {"t":[...]} containing exactly ${strings.length} translated strings, in the same order.` },
+      { role:"user", content: JSON.stringify(strings) }
+    ]});
+    let d; try { d=parseJsonLoose(out); } catch(_){ return null; }
+    const arr = Array.isArray(d) ? d : (d.t || d.translations || d.result || null);
+    return Array.isArray(arr) ? arr : null;
   }
-
-  /* ===================== Translation & narration ===================== */
-  async function translateText(plain) {
-    const lang = currentLang();
-    if (lang.code === "en") return plain;
-    const out = await groqChat({
-      temperature: 0.2, maxTokens: 1300,
-      messages: [
-        { role: "system", content: "You are a precise translator for low-literacy readers. Translate the text into " + lang.name + " (" + lang.native + "). Keep it simple and clear. Do NOT change phone numbers, names of organisations, or amounts. Return ONLY the translated text — no notes, no preamble." },
-        { role: "user", content: plain }
-      ]
-    });
-    return out.trim();
+  async function applySiteLanguage(){
+    const lang=currentLang();
+    const nodes=[...document.querySelectorAll("[data-i18n]")];
+    const phs=[...document.querySelectorAll("[data-i18n-ph]")];
+    nodes.forEach(n=>{ if(n.dataset.en==null) n.dataset.en=n.textContent.trim(); });
+    phs.forEach(n=>{ if(n.dataset.enph==null) n.dataset.enph=n.getAttribute("placeholder")||""; });
+    if(lang.code==="en"){ nodes.forEach(n=>n.textContent=n.dataset.en); phs.forEach(n=>n.setAttribute("placeholder",n.dataset.enph)); return; }
+    const originals=[...new Set([...nodes.map(n=>n.dataset.en), ...phs.map(n=>n.dataset.enph), ...DYN].filter(s=>s&&s.trim()))];
+    let cache=i18nCache(lang.code);
+    const missing=originals.filter(s=>!(s in cache));
+    if(missing.length){
+      $("langSpin").style.display="inline-flex";
+      const SIZE=15, sleep=ms=>new Promise(r=>setTimeout(r,ms)); let anyOk=false;
+      for(let i=0;i<missing.length;i+=SIZE){
+        const chunk=missing.slice(i,i+SIZE); let tr=null;
+        for(let attempt=0;attempt<2&&!tr;attempt++){
+          try { tr=await translateChunk(chunk,lang.name,lang.native); }
+          catch(e){ if(e&&e.status===429){ await sleep(2500); } else break; }
+        }
+        if(tr&&tr.length){ chunk.forEach((s,j)=>{ if(tr[j]) cache[s]=tr[j]; }); anyOk=true; }
+        await sleep(350); // gentle pacing to stay under free-tier rate limit
+      }
+      localStorage.setItem("cc_i18n_"+lang.code, JSON.stringify(cache));
+      $("langSpin").style.display="none";
+      if(!anyOk){ toast(friendlyError({name:"x"}),"error"); return; }
+    }
+    nodes.forEach(n=>{ const x=cache[n.dataset.en]; if(x) n.textContent=x; });
+    phs.forEach(n=>{ const x=cache[n.dataset.enph]; if(x) n.setAttribute("placeholder",x); });
   }
+  $("langSelect").addEventListener("change", async ()=>{ stopNarration(); await applySiteLanguage(); refreshDynamic(); });
+  function refreshDynamic(){ renderVault(); if($("panel-community").classList.contains("active")) renderFeed(); updateBadges(); }
 
-  let voicesReady = false;
-  function loadVoices() { voicesReady = (window.speechSynthesis && speechSynthesis.getVoices().length > 0); }
-  if (window.speechSynthesis) { loadVoices(); speechSynthesis.onvoiceschanged = loadVoices; }
+  /* ===== Narration ===== */
+  function narrate(text){ if(!("speechSynthesis" in window)){ toast("Narration isn't supported here","error"); return; } speechSynthesis.cancel(); const lang=currentLang(); const u=new SpeechSynthesisUtterance(text); u.lang=lang.speech; u.rate=0.95; const v=speechSynthesis.getVoices(); const m=v.find(x=>x.lang===lang.speech)||v.find(x=>x.lang&&x.lang.startsWith(lang.code)); if(m) u.voice=m; speechSynthesis.speak(u); }
+  function stopNarration(){ if("speechSynthesis" in window) speechSynthesis.cancel(); }
 
-  function narrate(text) {
-    if (!("speechSynthesis" in window)) { toast("Narration isn't supported on this browser", "error"); return; }
-    speechSynthesis.cancel();
-    const lang = currentLang();
-    const u = new SpeechSynthesisUtterance(text);
-    u.lang = lang.speech; u.rate = 0.95;
-    const voices = speechSynthesis.getVoices();
-    const v = voices.find(v => v.lang === lang.speech) || voices.find(v => v.lang && v.lang.startsWith(lang.code));
-    if (v) u.voice = v;
-    else if (lang.code !== "en") toast("No " + lang.name + " voice installed — reading in the device's default voice", "");
-    speechSynthesis.speak(u);
-  }
-  function stopNarration() { if ("speechSynthesis" in window) speechSynthesis.cancel(); }
-
-  // Attaches Translate + Listen buttons that act on a plain-text version of a result
-  function wireTranslateBlock(containerEl, plainTextFn) {
-    const panel = containerEl.querySelector("[data-translate-panel]");
-    const tbtn = containerEl.querySelector("[data-translate-btn]");
-    const lbtn = containerEl.querySelector("[data-listen-btn]");
-    if (tbtn) tbtn.addEventListener("click", async () => {
-      const lang = currentLang();
-      if (lang.code === "en") { toast("Pick a language above to translate", ""); return; }
-      tbtn.disabled = true; tbtn.innerHTML = '<span class="spinner dark"></span> Translating…';
-      try {
-        const t = await translateText(plainTextFn());
-        panel.querySelector(".tp-body").textContent = t;
-        panel.querySelector("[data-tp-lang]").textContent = lang.native;
-        panel.classList.add("show");
-        panel.dataset.translated = t;
-      } catch (e) { toast(friendlyError(e), "error"); }
-      finally { tbtn.disabled = false; tbtn.innerHTML = "🌐 Translate"; }
-    });
-    if (lbtn) lbtn.addEventListener("click", () => {
-      const translated = panel && panel.dataset.translated;
-      narrate(currentLang().code !== "en" && translated ? translated : plainTextFn());
-    });
-  }
-
-  function translateBlockHtml() {
-    return '<div class="row-actions">' +
-      '<button class="btn-secondary" data-translate-btn>🌐 Translate</button>' +
-      '<button class="btn-secondary" data-listen-btn>🔊 Listen</button>' +
-      '<button class="btn-secondary" data-stop-btn onclick="stopNarration()">⏹ Stop</button>' +
-      '</div>' +
-      '<div class="translate-panel" data-translate-panel>' +
-        '<div class="tp-head"><span>Translated · <span data-tp-lang></span></span></div>' +
-        '<div class="tp-body"></div>' +
-      '</div>';
-  }
-
-  /* ===================== Geolocation ===================== */
-  function getLocation(onDone) {
-    if (!navigator.geolocation) { toast("Location isn't supported on this browser", "error"); return; }
-    toast("Getting your location…", "");
+  /* ===== Geolocation + address ===== */
+  function setLocation(loc){ LOCATION=loc; $("locBar").classList.remove("need"); const label = loc.label || (loc.lat!=null ? loc.lat.toFixed(3)+", "+loc.lng.toFixed(3) : "your area"); $("locStatus").innerHTML="📍 "+escapeHtml(label); $("locSub").textContent = loc.source==="gps" ? "Using your current location." : "Using the address you entered."; $("addrRow").style.display="none"; $("locActions").style.display="flex"; }
+  function requestGps(){
+    $("locStatus").innerHTML="📍 "+escapeHtml(t("Detecting your location…")||"Detecting your location…");
+    if(!navigator.geolocation){ gpsFailed("Location isn't available on this browser."); return; }
     navigator.geolocation.getCurrentPosition(
-      (pos) => { onDone({ lat: pos.coords.latitude, lng: pos.coords.longitude }); },
-      (err) => { toast(err.code === 1 ? "Location permission denied" : "Couldn't get your location", "error"); },
-      { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
+      async pos=>{ const loc={ lat:pos.coords.latitude, lng:pos.coords.longitude, source:"gps" }; try{ loc.label=await reverseGeocode(loc.lat,loc.lng); }catch(_){} setLocation(loc); },
+      err=>{ gpsFailed(err.code===1 ? "Location permission was denied." : "Couldn't get your location."); },
+      { enableHighAccuracy:true, timeout:10000, maximumAge:60000 }
     );
   }
+  function gpsFailed(msg){ $("locBar").classList.add("need"); $("locStatus").innerHTML="📍 "+escapeHtml(msg); $("locSub").textContent="Type your area or address to continue."; $("addrRow").style.display="flex"; $("locActions").style.display="flex"; }
+  async function reverseGeocode(lat,lng){ const c=new AbortController(); const t=setTimeout(()=>c.abort(),7000); try{ const r=await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json&zoom=14`,{ headers:{ "Accept":"application/json" }, signal:c.signal }); const j=await r.json(); const a=j.address||{}; return a.suburb||a.neighbourhood||a.city_district||a.city||j.display_name||""; } finally { clearTimeout(t); } }
+  async function geocodeAddress(q){ const c=new AbortController(); const t=setTimeout(()=>c.abort(),7000); try{ const r=await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(q+", Bengaluru, India")}&format=json&limit=1`,{ headers:{ "Accept":"application/json" }, signal:c.signal }); const j=await r.json(); if(j&&j[0]) return { lat:parseFloat(j[0].lat), lng:parseFloat(j[0].lon), label:q, source:"address" }; } catch(_){} finally { clearTimeout(t); } return { lat:null, lng:null, label:q, source:"address" }; }
+  $("gpsRetry").addEventListener("click", requestGps);
+  $("addrToggle").addEventListener("click", ()=>{ $("addrRow").style.display="flex"; $("addrInput").focus(); });
+  $("addrBtn").addEventListener("click", setAddrFromInput);
+  $("addrInput").addEventListener("keydown", e=>{ if(e.key==="Enter") setAddrFromInput(); });
+  async function setAddrFromInput(){ const q=$("addrInput").value.trim(); if(!q){ $("addrInput").focus(); return; } const btn=$("addrBtn"); setBtnLoading(btn,true,"…"); const loc=await geocodeAddress(q); setBtnLoading(btn,false,t("Set")); setLocation(loc); toast("Location set", "success"); }
+  function requireLocation(){ if(LOCATION) return true; $("locBar").classList.add("need"); $("addrRow").style.display="flex"; $("locActions").style.display="flex"; $("locBar").scrollIntoView({behavior:"smooth",block:"center"}); toast("Add your location or address first","error"); return false; }
 
-  function nearestAreaHint() {
-    if (!USER_LOC) return "";
-    let best = null, bestKm = Infinity;
-    ORGANISATIONS.forEach(o => { if (o.lat != null) { const km = haversineKm(USER_LOC, {lat:o.lat,lng:o.lng}); if (km < bestKm) { bestKm = km; best = o; } } });
-    return best ? best.area : "";
-  }
-
-  /* ===================== Image helper (downscale) ===================== */
-  function fileToScaledDataURL(file, maxDim, quality) {
-    maxDim = maxDim || 1024; quality = quality || 0.8;
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => {
-        const img = new Image();
-        img.onload = () => {
-          let w = img.width, h = img.height;
-          if (w > h && w > maxDim) { h = Math.round(h * maxDim / w); w = maxDim; }
-          else if (h > maxDim) { w = Math.round(w * maxDim / h); h = maxDim; }
-          const c = document.createElement("canvas");
-          c.width = w; c.height = h;
-          c.getContext("2d").drawImage(img, 0, 0, w, h);
-          resolve(c.toDataURL("image/jpeg", quality));
-        };
-        img.onerror = () => reject(new Error("Couldn't read that image"));
-        img.src = reader.result;
-      };
-      reader.onerror = () => reject(new Error("Couldn't read that file"));
-      reader.readAsDataURL(file);
-    });
-  }
-
-  async function groqVision(promptText, imageDataUrl) {
-    const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), 45000);
-    let res;
+  /* ===== Nearest pharmacies (OpenStreetMap Overpass — free, no key) ===== */
+  async function findNearestPharmacies(loc,n){
+    if(!loc||loc.lat==null) return [];
+    const q=`[out:json][timeout:15];(node["amenity"="pharmacy"](around:4000,${loc.lat},${loc.lng});way["amenity"="pharmacy"](around:4000,${loc.lat},${loc.lng}););out center 40;`;
+    const c=new AbortController(); const tm=setTimeout(()=>c.abort(),12000);
     try {
-      res = await fetch(GROQ_URL, {
-        method: "POST",
-        headers: { "content-type": "application/json", "authorization": "Bearer " + API_KEY },
-        body: JSON.stringify({
-          model: GROQ_VISION_MODEL, temperature: 0.2, max_tokens: 1600,
-          messages: [{ role: "user", content: [
-            { type: "text", text: promptText },
-            { type: "image_url", image_url: { url: imageDataUrl } }
-          ] }]
-        }),
-        signal: controller.signal
-      });
-    } finally { clearTimeout(timer); }
-    if (!res.ok) {
-      let detail = ""; try { const ej = await res.json(); detail = (ej.error && ej.error.message) || ""; } catch (_) {}
-      throw apiError(res.status, detail);
-    }
-    const data = await res.json();
-    return (data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content) || "";
+      const r=await fetch("https://overpass-api.de/api/interpreter",{ method:"POST", headers:{ "content-type":"application/x-www-form-urlencoded" }, body:"data="+encodeURIComponent(q), signal:c.signal });
+      const j=await r.json();
+      return (j.elements||[]).map(e=>{ const la=e.lat!=null?e.lat:(e.center&&e.center.lat); const lo=e.lon!=null?e.lon:(e.center&&e.center.lon); if(la==null) return null; const g=e.tags||{}; const addr=[g["addr:housenumber"],g["addr:street"],g["addr:suburb"]||g["addr:neighbourhood"]].filter(Boolean).join(", "); return { name:g.name||"Pharmacy", address:addr, dist:haversineKm(loc,{lat:la,lng:lo}) }; }).filter(Boolean).sort((a,b)=>a.dist-b.dist).slice(0,n||2);
+    } catch(_){ return []; } finally { clearTimeout(tm); }
+  }
+  async function fillNearestPharmacies(){
+    const el=$("rxPharmacy"); if(!el) return; const v=el.querySelector(".v");
+    const ph=await findNearestPharmacies(LOCATION,2);
+    if(!ph.length){ v.textContent = t("Ask any licensed pharmacy or a nearby Jan Aushadhi store for the generic versions."); return; }
+    v.innerHTML = ph.map(p=>'<div class="med-line"><b>'+escapeHtml(p.name)+'</b>'+(p.address?' — '+escapeHtml(p.address):'')+' · '+escapeHtml(p.dist<1?Math.round(p.dist*1000)+" m":p.dist.toFixed(1)+" km")+'</div>').join("");
   }
 
-  /* ===================== Tabs ===================== */
-  document.querySelectorAll(".tab-btn").forEach(btn => {
-    btn.addEventListener("click", () => {
-      const tab = btn.dataset.tab;
-      document.querySelectorAll(".tab-btn").forEach(b => b.classList.toggle("active", b === btn));
-      document.querySelectorAll(".panel").forEach(p => p.classList.toggle("active", p.id === "panel-" + tab));
-      stopNarration();
-      if (tab === "vault") renderVault();
-      if (tab === "community") renderFeed();
-    });
-  });
+  /* ===== Image helper ===== */
+  function fileToScaledDataURL(file,maxDim,quality){ maxDim=maxDim||1024; quality=quality||0.8; return new Promise((resolve,reject)=>{ const r=new FileReader(); r.onload=()=>{ const img=new Image(); img.onload=()=>{ let w=img.width,h=img.height; if(w>h&&w>maxDim){ h=Math.round(h*maxDim/w); w=maxDim; } else if(h>maxDim){ w=Math.round(w*maxDim/h); h=maxDim; } const cv=document.createElement("canvas"); cv.width=w; cv.height=h; cv.getContext("2d").drawImage(img,0,0,w,h); resolve(cv.toDataURL("image/jpeg",quality)); }; img.onerror=()=>reject(new Error("Couldn't read that image")); img.src=r.result; }; r.onerror=()=>reject(new Error("Couldn't read that file")); r.readAsDataURL(file); }); }
 
-  /* ===================== API key handling ===================== */
-  function showConnected(on) {
-    $("keyBox").style.display = on ? "none" : "block";
-    $("connectedBadge").style.display = on ? "inline-flex" : "none";
-  }
-  function applyKeyState() {
-    if (API_KEY) { $("apiKey").value = API_KEY; showConnected(true); }
-    else showConnected(false);
-  }
-  function saveKey() {
-    const val = $("apiKey").value.trim();
-    if (!val) { $("apiKey").focus(); return; }
-    API_KEY = val;
-    try { localStorage.setItem(KEY_STORE, val); } catch (_) {}
-    showConnected(true);
-    toast("Connected — saved on this device", "success");
-  }
-  $("keySaveBtn").addEventListener("click", saveKey);
-  $("apiKey").addEventListener("keydown", (e) => { if (e.key === "Enter") saveKey(); });
-  $("changeKeyBtn").addEventListener("click", () => {
-    try { localStorage.removeItem(KEY_STORE); } catch (_) {}
-    showConnected(false); $("apiKey").focus();
-  });
+  /* ===== Tabs ===== */
+  document.querySelectorAll(".tab-btn").forEach(btn=>{ btn.addEventListener("click", ()=>{ const tab=btn.dataset.tab; document.querySelectorAll(".tab-btn").forEach(b=>b.classList.toggle("active",b===btn)); document.querySelectorAll(".panel").forEach(p=>p.classList.toggle("active",p.id==="panel-"+tab)); stopNarration(); if(tab==="vault") renderVault(); if(tab==="community") renderFeed(); }); });
 
-  /* ===================== FIND HELP ===================== */
-  const crisisInput = $("crisisInput"), findBtn = $("findBtn"), inlineErr = $("inlineErr"), output = $("output");
-
-  document.querySelectorAll(".demo-btn").forEach(btn => {
-    btn.addEventListener("click", () => { crisisInput.value = btn.getAttribute("data-scenario"); findHelp(); });
-  });
+  /* ===== FIND HELP ===== */
+  const crisisInput=$("crisisInput"), findBtn=$("findBtn"), inlineErr=$("inlineErr"), output=$("output");
+  document.querySelectorAll(".demo-btn").forEach(b=>b.addEventListener("click", ()=>{ crisisInput.value=b.getAttribute("data-scenario"); findHelp(); }));
   findBtn.addEventListener("click", findHelp);
-  crisisInput.addEventListener("keydown", (e) => { if ((e.metaKey || e.ctrlKey) && e.key === "Enter") { e.preventDefault(); findHelp(); } });
-  crisisInput.addEventListener("input", () => { if (inlineErr.style.display === "block") inlineErr.style.display = "none"; });
+  crisisInput.addEventListener("keydown", e=>{ if((e.metaKey||e.ctrlKey)&&e.key==="Enter"){ e.preventDefault(); findHelp(); } });
+  crisisInput.addEventListener("input", ()=>{ if(inlineErr.style.display==="block") inlineErr.style.display="none"; });
 
-  $("locBtn").addEventListener("click", () => {
-    getLocation((loc) => {
-      USER_LOC = loc;
-      $("locBtn").innerHTML = "📍 Location on";
-      toast("Location set — results will show distance" + (nearestAreaHint() ? " (near " + nearestAreaHint().split("(")[0].trim() + ")" : ""), "success");
+  function helpInstitutions(){
+    const list=ORGANISATIONS.map(o=>{
+      const d=(LOCATION&&LOCATION.lat!=null&&o.lat!=null)?haversineKm(LOCATION,{lat:o.lat,lng:o.lng}):null;
+      return { name:o.name, sector:o.sector, type:o.type, provides:o.provides, phone:o.phone, area:o.area, availability:o.availability, distance_km:(d==null?null:Math.round(d*10)/10) };
     });
-  });
+    list.sort((a,b)=>(a.distance_km==null?1e9:a.distance_km)-(b.distance_km==null?1e9:b.distance_km));
+    return list;
+  }
+  function helpPrompt(){
+    const lang=currentLang();
+    return `You are CrisisConnect, helping people in Bangalore in an emergency. You get the person's message, their approximate location, and a database of real support institutions (government, private, NGO).
 
-  function buildSystemPrompt() {
-    return `You are CrisisConnect, an AI assistant helping people in Bangalore find emergency support. You receive a person's crisis description and a database of local organisations. Your job is to:
+1. SAFETY CHECK: if the message is clearly abusive, hateful, sexual, spam, or a deliberate prank, reply ONLY: {"blocked":true,"block_reason":"..."}. Genuine distress or mentions of self-harm are NOT reasons to block — help them and choose mental-health support.
 
-1. First, SAFETY CHECK the message. If it is clearly abusive, hateful, harassing, sexual, spam/advertising, a deliberate prank/false alarm, or an attempt to misuse this emergency tool, respond ONLY with: {"blocked": true, "block_reason": "<short reason>"}. IMPORTANT: genuine distress, fear, sadness, or mentions of self-harm are NOT reasons to block — help those people and surface mental-health organisations.
+2. Classify the crisis. Each institution has a "distance_km" from the user (smaller = closer; null = phone-only or citywide). The list is already sorted nearest-first. Pick the SINGLE BEST institution by name: it MUST match the crisis type, and among matching institutions you MUST strongly prefer the smallest distance_km and "available". Then pick 2 fallbacks by name (next best, also near and available).
 
-2. Otherwise, classify the crisis into one or more of: displacement, food, medical, elderly, mental_health, emotional_crisis, family_safety, flood, utility, civic, injury, domestic.
+3. Write ALL user-facing text in ${lang.name} (${lang.native}). Keep institution names, phone numbers and place names unchanged.
 
-3. Select the single BEST matching organisation as the primary recommendation, then 2 more as fallbacks. Prefer "available" over "limited". If the user's location/area is provided, prefer physically closer organisations.
-
-4. Write a "when you call" script — one sentence the person should say.
-
-5. Return ONLY a JSON object with this exact structure (no markdown, no preamble):
+Return ONLY JSON:
 {
-  "crisis_label": "Short label",
-  "crisis_emoji": "Single relevant emoji",
-  "understood": "One plain-language sentence confirming what you understood",
-  "primary": { "name": "...", "provides": "...", "phone": "...", "area": "...", "availability": "available or limited", "lastUpdated": "...", "call_script": "...", "bring": ["item 1","item 2","item 3"] },
-  "fallbacks": [ { "name": "...", "provides": "...", "phone": "...", "area": "...", "availability": "..." }, { "name": "...", "provides": "...", "phone": "...", "area": "...", "availability": "..." } ]
+ "blocked":false,
+ "crisis_label":"short label",
+ "crisis_emoji":"emoji",
+ "understood":"one sentence confirming what you understood",
+ "primary_name":"exact institution name from the database",
+ "call_script":"one sentence to say when calling",
+ "what_to_do":["3-5 short action steps right now"],
+ "important_details":"1-2 sentences of key things to know (eligibility, timing, free/paid, what to expect)",
+ "tips":["2-3 practical tips to handle or solve the situation"],
+ "fallback_names":["institution name","institution name"],
+ "community_alert":{"post":true_or_false,"summary":"if this is an urgent public emergency others nearby could help with, a one-line neutral summary, else empty"}
 }
 
-Here is the organisation database:
-
-` + JSON.stringify(ORGANISATIONS.map(({lat,lng,...o}) => o));
+Database (sorted nearest-first): `+JSON.stringify(helpInstitutions());
   }
 
-  function setBtnLoading(btn, on, label) {
-    if (on) { btn.disabled = true; btn.dataset.label = btn.innerHTML; btn.innerHTML = '<span class="spinner"></span> ' + (label || "Working…"); }
-    else { btn.disabled = false; btn.innerHTML = btn.dataset.label || label; }
-  }
-
-  async function findHelp() {
-    inlineErr.style.display = "none";
-    if (!requireKey()) return;
-    const message = crisisInput.value.trim();
-    if (!message) { crisisInput.classList.remove("shake"); void crisisInput.offsetWidth; crisisInput.classList.add("shake"); inlineErr.style.display = "block"; return; }
-
-    setBtnLoading(findBtn, true, "Finding the right help…");
-    output.innerHTML = "";
+  async function findHelp(){
+    inlineErr.style.display="none";
+    const message=crisisInput.value.trim();
+    if(!message){ crisisInput.classList.remove("shake"); void crisisInput.offsetWidth; crisisInput.classList.add("shake"); inlineErr.style.display="block"; return; }
+    if(!requireLocation()) return;
+    setBtnLoading(findBtn,true,t("Finding the right help…")||"Finding the right help…");
+    output.innerHTML="";
     try {
-      let userMsg = message;
-      if (USER_LOC) userMsg += "\n\n[User location: approx " + USER_LOC.lat.toFixed(4) + "," + USER_LOC.lng.toFixed(4) + (nearestAreaHint() ? " — near " + nearestAreaHint() : "") + ". Prefer closer organisations.]";
-      const raw = await groqChat({ json: true, temperature: 0.4, maxTokens: 1024, messages: [
-        { role: "system", content: buildSystemPrompt() },
-        { role: "user", content: userMsg }
-      ] });
-      const data = parseJsonLoose(raw);
-      if (data.blocked) { showHelpError("⚠️ " + (data.block_reason || "This message can't be processed here.") + " If this is a real emergency, call 108 or 1916 directly."); return; }
-      renderCard(data);
-    } catch (err) { console.error(err); showHelpError(friendlyError(err)); }
-    finally { setBtnLoading(findBtn, false, 'Find Help <span aria-hidden="true">→</span>'); }
+      const loc=LOCATION; const ctx=`\n\n[User location: ${loc.label||""} ${loc.lat!=null?`(${loc.lat.toFixed(4)},${loc.lng.toFixed(4)})`:""}. Prefer institutions near here.]`;
+      const raw=await groqChat({ json:true, temperature:0.25, maxTokens:1100, messages:[ {role:"system",content:helpPrompt()}, {role:"user",content:message+ctx} ] });
+      const d=parseJsonLoose(raw);
+      if(d.blocked){ output.innerHTML='<div class="card"><div class="error-box">⚠️ '+escapeHtml(d.block_reason||"This message can't be processed here.")+' If this is a real emergency, call 108 or 1916.</div></div>'; return; }
+      renderCard(d, message);
+    } catch(err){ console.error(err); output.innerHTML='<div class="card"><div class="error-box">'+escapeHtml(friendlyError(err))+'</div></div>'; }
+    finally { setBtnLoading(findBtn,false,'<span>'+escapeHtml(t("Find Help"))+'</span> →'); }
   }
 
-  function showHelpError(msg) { output.innerHTML = '<div class="card" style="margin-top:26px;"><div class="error-box">' + escapeHtml(msg) + "</div></div>"; }
+  function availMarkup(a){ return (a||"").toLowerCase()==="available" ? '<span class="avail available">● '+escapeHtml(t("Available")||"Available")+'</span>' : '<span class="avail limited">◐ '+escapeHtml(t("Limited")||"Limited")+'</span>'; }
+  function sectorTag(s){ const m={govt:["govt","Govt"],private:["private","Private"],ngo:["ngo","NGO"]}[s]; return m?'<span class="org-sector '+m[0]+'">'+m[1]+'</span>':''; }
 
-  function availMarkup(a) {
-    return (a || "").toLowerCase() === "available"
-      ? '<span class="avail available">● Available</span>'
-      : '<span class="avail limited">◐ Limited</span>';
+  function renderCard(d, message){
+    const p=orgByName(d.primary_name)||{};
+    const fbs=(d.fallback_names||[]).map(orgByName).filter(Boolean).filter(o=>o.name!==p.name).slice(0,2);
+    const dist=distanceLabel(p);
+    const steps=(arr,cls)=> '<ul class="steps '+(cls||"")+'">'+(arr||[]).map(x=>"<li>"+escapeHtml(x)+"</li>").join("")+"</ul>";
+
+    const secA='<div class="fade-sec" data-step><span class="crisis-pill">'+escapeHtml(d.crisis_emoji||"🆘")+" "+escapeHtml(d.crisis_label||"Crisis")+"</span></div>";
+    const secB='<div class="fade-sec" data-step><div class="understood">'+escapeHtml(d.understood||"")+"</div></div>";
+    const secC='<div class="fade-sec best-block" data-step><div class="sec-heading">'+escapeHtml(t("Best option right now"))+'</div><div class="best-card">'+
+      '<div class="org-name">'+escapeHtml(p.name||d.primary_name||"")+sectorTag(p.sector)+'</div>'+
+      '<div class="org-provides">'+escapeHtml(p.provides||"")+'</div>'+
+      '<a class="phone-link" href="'+telHref(p.phone)+'">'+escapeHtml(p.phone||"")+'</a>'+
+      '<div class="org-area">'+escapeHtml(p.area||"")+'</div>'+
+      '<div class="meta-row">'+availMarkup(p.availability)+'<span class="updated">'+escapeHtml(p.lastUpdated||"")+'</span>'+(dist?'<span class="distance">📍 '+escapeHtml(dist)+'</span>':'')+'</div>'+
+      '<div class="call-script"><span class="lead">'+escapeHtml(t("When you call, say:"))+'</span> <span class="phrase">"'+escapeHtml(d.call_script||"")+'"</span></div>'+
+      (p.bring&&p.bring.length?'<div class="bring-block"><div class="label">'+escapeHtml(t("What to bring"))+'</div><ul>'+p.bring.map(b=>"<li>"+escapeHtml(b)+"</li>").join("")+'</ul></div>':'')+
+      '</div></div>';
+    const secDo='<div class="fade-sec kv" data-step><div class="k">'+escapeHtml(t("What to do now"))+'</div>'+steps(d.what_to_do)+'</div>';
+    const secDet=d.important_details?'<div class="fade-sec kv" data-step><div class="k">'+escapeHtml(t("Important details"))+'</div><div class="v">'+escapeHtml(d.important_details)+'</div></div>':'';
+    const secTips=(d.tips&&d.tips.length)?'<div class="fade-sec kv" data-step><div class="k">'+escapeHtml(t("Helpful tips"))+'</div>'+steps(d.tips,"tips")+'</div>':'';
+    const fbCards=fbs.map(o=>{ const dd=distanceLabel(o); return '<div class="fb-card"><div class="fb-name">'+escapeHtml(o.name)+sectorTag(o.sector)+'</div><div class="fb-provides">'+escapeHtml(o.provides)+'</div><a class="fb-phone" href="'+telHref(o.phone)+'">'+escapeHtml(o.phone)+'</a>'+availMarkup(o.availability)+(dd?' <span class="distance">· '+escapeHtml(dd)+'</span>':'')+'</div>'; }).join("");
+    const secFb=fbs.length?'<div class="fade-sec" data-step><div class="divider"></div><div class="sec-heading">'+escapeHtml(t("If that doesn't work"))+'</div><div class="fallback-grid">'+fbCards+'</div></div>':'';
+    const secE='<div class="fade-sec" data-step><div class="divider"></div><div class="sec-heading">'+escapeHtml(t("Always available"))+'</div><div class="always-grid">'+
+      '<div class="always-item"><div class="num"><a href="tel:108">108</a></div><div class="desc">'+escapeHtml(t("Ambulance"))+'</div></div>'+
+      '<div class="always-item"><div class="num"><a href="tel:100">100</a></div><div class="desc">'+escapeHtml(t("Police"))+'</div></div>'+
+      '<div class="always-item"><div class="num"><a href="tel:1916">1916</a></div><div class="desc">'+escapeHtml(t("BBMP helpline"))+'</div></div>'+
+      '<div class="always-item"><div class="num"><a href="tel:9152987821">iCall</a></div><div class="desc">'+escapeHtml(t("Mental health"))+'</div></div></div></div>';
+    const secListen='<div class="fade-sec row-actions" data-step><button class="btn-secondary" id="cardListen">🔊 '+escapeHtml(t("Listen")||"Listen")+'</button><button class="btn-secondary" onclick="stopNarration()">⏹</button></div>';
+
+    output.innerHTML='<div class="card">'+secA+secB+secC+secDo+secDet+secTips+secFb+secE+secListen+'</div>';
+    const plain=[d.crisis_label,d.understood,(p.name||"")+". "+(p.provides||"")+". "+(p.phone||""),(d.what_to_do||[]).join(". "),d.important_details,(d.tips||[]).join(". ")].filter(Boolean).join(". ");
+    $("cardListen").addEventListener("click", ()=>narrate(plain));
+    const steps2=output.querySelectorAll("[data-step]"); steps2.forEach((el,i)=>{ if(PRM) el.classList.add("visible"); else setTimeout(()=>el.classList.add("visible"),150*(i+1)); });
+
+    // Community alert if the AI flags it as a public emergency
+    if(d.community_alert&&d.community_alert.post&&d.community_alert.summary){
+      const feed=load(FEED_KEY); const ref="CC-"+Math.random().toString(36).slice(2,7).toUpperCase();
+      feed.unshift({ id:Date.now(), ref, type:"help", hazard_type:d.crisis_label||"Help needed", severity:"high", summary:d.community_alert.summary, loc:LOCATION&&LOCATION.lat!=null?{lat:LOCATION.lat,lng:LOCATION.lng}:null, createdAt:new Date().toISOString(), status:"open" });
+      save(FEED_KEY,feed); updateBadges();
+      const n=3+Math.floor(Math.random()*12); toast("📣 "+n+" "+(t("nearby users notified")||"nearby users notified"),"");
+    }
   }
 
-  function cardPlainText(d) {
-    const p = d.primary || {}, fbs = d.fallbacks || [];
-    let t = (d.crisis_label || "") + ".\n" + (d.understood || "") + "\n\n";
-    t += "Best option: " + (p.name || "") + ". " + (p.provides || "") + ". Phone: " + (p.phone || "") + ". " + (p.area || "") + ".\n";
-    if (p.call_script) t += "When you call, say: " + p.call_script + "\n";
-    if (p.bring && p.bring.length) t += "Bring: " + p.bring.join(", ") + ".\n";
-    if (fbs.length) t += "\nIf that doesn't work: " + fbs.map(f => (f.name || "") + " (" + (f.phone || "") + ")").join("; ") + ".\n";
-    t += "\nAlways available: Ambulance 108, Police 100, BBMP 1916, mental health iCall 9152987821.";
-    return t;
-  }
+  /* ===== DOCUMENTS ===== */
+  let noticeImg=null;
+  $("noticeDrop").addEventListener("click", ()=>$("noticeFile").click());
+  $("noticeFile").addEventListener("change", async e=>{ const f=e.target.files[0]; if(!f) return; try{ noticeImg=await fileToScaledDataURL(f); const pv=$("noticePreview"); pv.src=noticeImg; pv.hidden=false; $("noticeDrop").hidden=true; $("noticeActions").hidden=false; $("noticeOutput").innerHTML=""; }catch(err){ toast(err.message,"error"); } });
+  $("noticeResetBtn").addEventListener("click", ()=>{ noticeImg=null; $("noticeFile").value=""; $("noticePreview").hidden=true; $("noticeDrop").hidden=false; $("noticeActions").hidden=true; $("noticeOutput").innerHTML=""; });
 
-  function renderCard(d) {
-    const primary = d.primary || {}, fallbacks = Array.isArray(d.fallbacks) ? d.fallbacks : [];
-    const bring = Array.isArray(primary.bring) ? primary.bring : [];
-    const pOrg = orgByName(primary.name), pDist = pOrg ? distanceLabel(pOrg) : "";
+  $("analyzeNoticeBtn").addEventListener("click", async ()=>{
+    if(!noticeImg) return;
+    const btn=$("analyzeNoticeBtn"); setBtnLoading(btn,true,t("Reading…")||"Reading…"); $("noticeOutput").innerHTML="";
+    const lang=currentLang();
+    const prompt=`You are CrisisConnect's document helper for people in Bangalore who may have low literacy or limited English. Look at this image.
 
-    const secA = '<div class="fade-sec" data-step><span class="crisis-pill">' + escapeHtml(d.crisis_emoji || "🆘") + " " + escapeHtml(d.crisis_label || "Crisis") + "</span></div>";
-    const secB = '<div class="fade-sec" data-step><div class="understood">' + escapeHtml(d.understood || "") + "</div></div>";
+MODERATE first: if it is sexual, violent, hateful, or clearly NOT a real document (selfie, meme, random object), reply ONLY: {"ok":false,"reason":"..."}.
 
-    const secC = '<div class="fade-sec best-block" data-step>' +
-      '<div class="sec-heading">Best option right now</div>' +
-      '<div class="best-card">' +
-        '<div class="org-name">' + escapeHtml(primary.name || "") + "</div>" +
-        '<div class="org-provides">' + escapeHtml(primary.provides || "") + "</div>" +
-        '<a class="phone-link" href="' + telHref(primary.phone) + '">' + escapeHtml(primary.phone || "") + "</a>" +
-        '<div class="org-area">' + escapeHtml(primary.area || "") + "</div>" +
-        '<div class="meta-row">' + availMarkup(primary.availability) +
-          '<span class="updated">Updated ' + escapeHtml(primary.lastUpdated || "recently") + "</span>" +
-          (pDist ? '<span class="distance">📍 ' + escapeHtml(pDist) + "</span>" : "") +
-        "</div>" +
-        '<div class="call-script"><span class="lead">When you call, say:</span> <span class="phrase">"' + escapeHtml(primary.call_script || "") + '"</span></div>' +
-        '<div class="bring-block"><div class="label">What to bring</div><ul>' + bring.map(b => "<li>" + escapeHtml(b) + "</li>").join("") + "</ul></div>" +
-      "</div></div>";
-
-    const fbCards = fallbacks.slice(0,2).map(f => {
-      const o = orgByName(f.name), dist = o ? distanceLabel(o) : "";
-      return '<div class="fb-card"><div class="fb-name">' + escapeHtml(f.name || "") + "</div>" +
-        '<div class="fb-provides">' + escapeHtml(f.provides || "") + "</div>" +
-        '<a class="fb-phone" href="' + telHref(f.phone) + '">' + escapeHtml(f.phone || "") + "</a>" +
-        availMarkup(f.availability) + (dist ? ' <span class="distance">· ' + escapeHtml(dist) + "</span>" : "") + "</div>";
-    }).join("");
-    const secD = fallbacks.length ? '<div class="fade-sec" data-step><div class="divider"></div><div class="sec-heading">If that doesn\'t work</div><div class="fallback-grid">' + fbCards + "</div></div>" : "";
-
-    const secE = '<div class="fade-sec" data-step><div class="divider"></div><div class="sec-heading">Always available</div><div class="always-grid">' +
-      '<div class="always-item"><div class="num"><a href="tel:108">108</a></div><div class="desc">Ambulance</div></div>' +
-      '<div class="always-item"><div class="num"><a href="tel:100">100</a></div><div class="desc">Police</div></div>' +
-      '<div class="always-item"><div class="num"><a href="tel:1916">1916</a></div><div class="desc">BBMP helpline</div></div>' +
-      '<div class="always-item"><div class="num"><a href="tel:9152987821">iCall 9152987821</a></div><div class="desc">Mental health</div></div>' +
-      "</div></div>";
-
-    const secT = '<div class="fade-sec" data-step>' + translateBlockHtml() + "</div>";
-    const secF = '<div class="fade-sec" data-step><div class="card-notice">Availability shown is based on last reported status. Always call ahead to confirm. This tool does not replace emergency services — call 108 for life-threatening emergencies.</div></div>';
-
-    output.innerHTML = '<div class="card" style="margin-top:26px;">' + secA + secB + secC + secD + secE + secT + secF + "</div>";
-    wireTranslateBlock(output, () => cardPlainText(d));
-
-    const steps = output.querySelectorAll("[data-step]");
-    steps.forEach((el, i) => { if (PREFERS_REDUCED_MOTION) el.classList.add("visible"); else setTimeout(() => el.classList.add("visible"), 150 * (i + 1)); });
-  }
-
-  /* ===================== CHECK A NOTICE ===================== */
-  let noticeImg = null;
-  $("noticeDrop").addEventListener("click", () => $("noticeFile").click());
-  $("noticeFile").addEventListener("change", async (e) => {
-    const f = e.target.files[0]; if (!f) return;
-    try {
-      noticeImg = await fileToScaledDataURL(f);
-      const pv = $("noticePreview"); pv.src = noticeImg; pv.hidden = false;
-      $("noticeDrop").hidden = true; $("noticeActions").hidden = false; $("noticeOutput").innerHTML = "";
-    } catch (err) { toast(err.message, "error"); }
-  });
-  $("noticeResetBtn").addEventListener("click", resetNotice);
-  function resetNotice() {
-    noticeImg = null; $("noticeFile").value = "";
-    $("noticePreview").hidden = true; $("noticeDrop").hidden = false; $("noticeActions").hidden = true; $("noticeOutput").innerHTML = "";
-  }
-
-  $("analyzeNoticeBtn").addEventListener("click", async () => {
-    if (!requireKey() || !noticeImg) return;
-    const btn = $("analyzeNoticeBtn"); setBtnLoading(btn, true, "Reading & checking…");
-    $("noticeOutput").innerHTML = "";
-    const lang = currentLang();
-    const prompt = `You are CrisisConnect's document checker for people in Bangalore, India, who may have low literacy or limited English. Look at this image.
-
-FIRST moderate it. If the image is sexual, violent/graphic, hateful, or clearly NOT a document/notice/letter/bill/official message (e.g. a selfie, meme, random object), return ONLY: {"ok": false, "reason": "<short reason>"}.
-
-Otherwise read the document and return ONLY this JSON (no markdown):
+Otherwise read it and reply ONLY with JSON. Write all explanations in ${lang.name} (${lang.native}); keep medicine names, organisation names and numbers unchanged.
 {
-  "ok": true,
-  "doc_type": "e.g. Government notice / Electricity bill / Court summons / Bank letter / SMS / Scam message",
-  "summary_en": "2-3 plain simple sentences in English explaining what this document says and what it wants",
-  "translation": "The same plain summary translated into ${lang.name} (${lang.native}). If language is English, repeat the English summary.",
-  "legitimacy": "legitimate | suspicious | likely_scam",
-  "legitimacy_reason": "Why — name concrete signs (official letterhead, known dept, vs. asking for OTP/money/urgent threats/odd links)",
-  "red_flags": ["any specific warning signs, empty array if none"],
-  "importance": "high | medium | low",
-  "priority_reason": "Why this importance/priority",
-  "deadline": "ISO date YYYY-MM-DD if the document states or implies a deadline, else null",
-  "advice": ["3-5 short, concrete steps the person should take, in plain language"],
-  "title": "A short 3-6 word title for saving this"
-}`;
+ "ok":true,
+ "category":"prescription | notice | bill | legal | id | report | other",
+ "doc_type":"short human label",
+ "title":"3-6 word title for saving",
+ "simple_explanation":"3-5 very simple sentences explaining what this document is and means",
+ "legitimacy":"legitimate | suspicious | likely_scam | not_applicable",
+ "legitimacy_reason":"why (for letters/notices/bills); short",
+ "red_flags":["specific warning signs, empty if none"],
+ "importance":"high | medium | low",
+ "deadline":"YYYY-MM-DD if any, else null",
+ "advice":["3-5 concrete steps the person should take"],
+ "medicines":[{"name":"","purpose":"","dosage":"","frequency":"","duration":"","where_to_get":"","cautions":""}]
+}
+For non-prescriptions, "medicines" is an empty array. For prescriptions, fill it and give where_to_get as general guidance (e.g. generic name, Jan Aushadhi / any licensed pharmacy).`;
     try {
-      const raw = await groqVision(prompt, noticeImg);
-      const d = parseJsonLoose(raw);
-      if (d.ok === false) { $("noticeOutput").innerHTML = '<div class="card" style="margin-top:18px;"><div class="error-box">⚠️ ' + escapeHtml(d.reason || "This image doesn't look like a document.") + " Please upload a clear photo of the notice or letter.</div></div>"; return; }
+      const raw=await groqVision(prompt,noticeImg);
+      const d=parseJsonLoose(raw);
+      if(d.ok===false){ $("noticeOutput").innerHTML='<div class="card"><div class="error-box">⚠️ '+escapeHtml(d.reason||"This doesn't look like a document.")+' Please upload a clear photo of the document.</div></div>'; return; }
       renderNotice(d);
-    } catch (err) { console.error(err); $("noticeOutput").innerHTML = '<div class="card" style="margin-top:18px;"><div class="error-box">' + escapeHtml(friendlyError(err)) + "</div></div>"; }
-    finally { setBtnLoading(btn, false, "Analyse this document"); }
+    } catch(err){ console.error(err); $("noticeOutput").innerHTML='<div class="card"><div class="error-box">'+escapeHtml(friendlyError(err))+'</div></div>'; }
+    finally { setBtnLoading(btn,false,'<span>'+escapeHtml(t("Read & explain this"))+'</span>'); }
   });
 
-  function legitBadge(l) {
-    const m = { legitimate: ["legit","✓ Looks legitimate"], suspicious: ["suspicious","⚠ Suspicious"], likely_scam: ["scam","⛔ Likely scam"] };
-    const x = m[l] || m.suspicious; return '<span class="badge ' + x[0] + '">' + x[1] + "</span>";
-  }
-  function prioBadge(p) {
-    const x = { high: "high", medium: "medium", low: "low" }[p] || "medium";
-    return '<span class="badge prio-' + x + '">Priority: ' + (p || "medium") + "</span>";
-  }
-  function noticePlainText(d) {
-    let t = (d.title || d.doc_type || "Document") + ".\n" + (d.summary_en || "") + "\n";
-    t += "This looks " + (d.legitimacy || "").replace("_"," ") + ". " + (d.legitimacy_reason || "") + "\n";
-    if (d.deadline) t += "Deadline: " + d.deadline + ".\n";
-    if (d.advice && d.advice.length) t += "What to do: " + d.advice.join("; ") + ".";
-    return t;
+  function legitBadge(l){ if(!l||l==="not_applicable") return ""; const m={legitimate:["legit","✓ "+(t("Looks legitimate")||"Looks legitimate")],suspicious:["suspicious","⚠ "+(t("Suspicious")||"Suspicious")],likely_scam:["scam","⛔ "+(t("Likely scam")||"Likely scam")]}[l]||["suspicious","⚠"]; return '<span class="badge '+m[0]+'">'+escapeHtml(m[1])+'</span>'; }
+  function prioBadge(p){ const x={high:"high",medium:"medium",low:"low"}[p]||"medium"; return '<span class="badge prio-'+x+'">'+escapeHtml((t("Priority")||"Priority")+": "+(p||"medium"))+'</span>'; }
+
+  function renderNotice(d){
+    const flags=(d.red_flags||[]).filter(Boolean);
+    const meds=(d.medicines||[]).filter(m=>m&&m.name);
+    let html='<div class="card"><div class="badge-row">'+legitBadge(d.legitimacy)+prioBadge(d.importance)+'<span class="badge prio-low">'+escapeHtml(d.doc_type||d.category||"Document")+'</span></div>';
+    html+='<div class="kv"><div class="k">'+escapeHtml(t("What this says"))+'</div><div class="v">'+escapeHtml(d.simple_explanation||"")+'</div></div>';
+    if(meds.length){ html+='<div class="kv"><div class="k">'+escapeHtml(t("Medicines"))+'</div>'+meds.map(m=>'<div class="med-card"><div class="med-name">'+escapeHtml(m.name)+'</div>'+(m.purpose?'<div class="med-line"><b>'+escapeHtml(t("Purpose")||"Purpose")+':</b> '+escapeHtml(m.purpose)+'</div>':'')+(m.dosage||m.frequency?'<div class="med-line"><b>'+escapeHtml(t("How to take")||"How to take")+':</b> '+escapeHtml([m.dosage,m.frequency,m.duration].filter(Boolean).join(", "))+'</div>':'')+(m.where_to_get?'<div class="med-line"><b>'+escapeHtml(t("Where to get")||"Where to get")+':</b> '+escapeHtml(m.where_to_get)+'</div>':'')+(m.cautions?'<div class="med-line"><b>'+escapeHtml(t("Caution")||"Caution")+':</b> '+escapeHtml(m.cautions)+'</div>':'')+'</div>').join("")+'</div>'; }
+    if(meds.length) html+='<div class="kv" id="rxPharmacy"><div class="k">'+escapeHtml(t("Nearest pharmacies"))+'</div><div class="v">'+escapeHtml(t("Finding pharmacies near you…"))+'</div></div>';
+    if(d.legitimacy_reason&&d.legitimacy&&d.legitimacy!=="not_applicable") html+='<div class="kv"><div class="k">'+escapeHtml(t("Is it genuine?"))+'</div><div class="v">'+escapeHtml(d.legitimacy_reason)+'</div></div>';
+    if(flags.length) html+='<div class="kv"><div class="k">'+escapeHtml(t("Warning signs"))+'</div><ul class="steps">'+flags.map(f=>"<li>"+escapeHtml(f)+"</li>").join("")+'</ul></div>';
+    if(d.deadline) html+='<div class="kv"><div class="k">'+escapeHtml(t("Deadline"))+'</div><div class="v">📅 '+escapeHtml(d.deadline)+'</div></div>';
+    if(d.advice&&d.advice.length) html+='<div class="kv"><div class="k">'+escapeHtml(t("What you should do"))+'</div><ul class="steps">'+d.advice.map(a=>"<li>"+escapeHtml(a)+"</li>").join("")+'</ul></div>';
+    html+='<div class="row-actions"><button class="btn-secondary" id="noticeListen">🔊 '+escapeHtml(t("Listen")||"Listen")+'</button><button class="btn-primary" id="saveVaultBtn" style="flex:1;">🗂 '+escapeHtml(t("Save to vault"))+'</button></div>';
+    html+='<div class="card-notice">This is AI-generated and can be wrong. For medicines, follow your doctor and pharmacist. For legal/official documents, verify with the issuing office before paying or sharing details.</div></div>';
+    $("noticeOutput").innerHTML=html;
+    if(meds.length) fillNearestPharmacies();
+    const plain=[d.simple_explanation, meds.map(m=>m.name+": "+[m.dosage,m.frequency].filter(Boolean).join(" ")).join(". "), (d.advice||[]).join(". ")].filter(Boolean).join(". ");
+    $("noticeListen").addEventListener("click", ()=>narrate(plain));
+    $("saveVaultBtn").addEventListener("click", ()=>{ const v=load(VAULT_KEY); v.unshift({ id:Date.now(), title:d.title||d.doc_type||"Document", doc_type:d.doc_type||d.category||"", legitimacy:d.legitimacy, importance:d.importance, deadline:d.deadline||null, summary:d.simple_explanation||"", advice:d.advice||[], medicines:meds, savedAt:new Date().toISOString() }); save(VAULT_KEY,v); toast("Saved to your vault","success"); updateBadges(); $("saveVaultBtn").disabled=true; $("saveVaultBtn").textContent="✓"; });
   }
 
-  function renderNotice(d) {
-    const lang = currentLang();
-    const flags = (d.red_flags || []).filter(Boolean);
-    const html = '<div class="card" style="margin-top:18px;">' +
-      '<div class="badge-row">' + legitBadge(d.legitimacy) + prioBadge(d.importance) +
-        '<span class="badge prio-low">' + escapeHtml(d.doc_type || "Document") + "</span></div>" +
-      '<div class="kv"><div class="k">What this says</div><div class="v">' + escapeHtml(d.summary_en || "") + "</div></div>" +
-      (lang.code !== "en" && d.translation ? '<div class="kv"><div class="k">' + escapeHtml(lang.native) + '</div><div class="v">' + escapeHtml(d.translation) + "</div></div>" : "") +
-      '<div class="kv"><div class="k">Is it genuine?</div><div class="v">' + escapeHtml(d.legitimacy_reason || "") + "</div></div>" +
-      (flags.length ? '<div class="kv"><div class="k">Warning signs</div><ul class="advice-list" style="margin-top:4px;">' + flags.map(f => '<li style="">' + escapeHtml(f) + "</li>").join("") + "</ul></div>" : "") +
-      (d.deadline ? '<div class="kv"><div class="k">Deadline</div><div class="v">📅 ' + escapeHtml(d.deadline) + "</div></div>" : "") +
-      '<div class="kv"><div class="k">What you should do</div><ul class="advice-list">' + (d.advice || []).map(a => "<li>" + escapeHtml(a) + "</li>").join("") + "</ul></div>" +
-      translateBlockHtml() +
-      '<div class="row-actions"><button class="btn-primary" id="saveVaultBtn" style="flex:1;">🗂 Save to vault</button></div>' +
-      '<div class="card-notice">This legitimacy check is AI-generated and can be wrong. When unsure, verify with the official department directly before paying money or sharing personal details.</div>' +
-    "</div>";
-    $("noticeOutput").innerHTML = html;
-    wireTranslateBlock($("noticeOutput"), () => noticePlainText(d));
-    $("saveVaultBtn").addEventListener("click", () => {
-      const vault = load(VAULT_KEY);
-      vault.unshift({ id: Date.now(), title: d.title || d.doc_type || "Document", doc_type: d.doc_type || "", legitimacy: d.legitimacy, importance: d.importance, deadline: d.deadline || null, summary: d.summary_en || "", translation: d.translation || "", advice: d.advice || [], savedAt: new Date().toISOString() });
-      save(VAULT_KEY, vault);
-      toast("Saved to your vault", "success");
-      updateBadges();
-      $("saveVaultBtn").disabled = true; $("saveVaultBtn").textContent = "✓ Saved";
-    });
+  /* ===== VAULT ===== */
+  function deadlineInfo(iso){ if(!iso) return null; const d=new Date(iso+"T00:00:00"); if(isNaN(d)) return null; const days=Math.ceil((d-new Date().setHours(0,0,0,0))/86400000); let cls="",txt; if(days<0){ cls="due"; txt="Overdue by "+Math.abs(days)+"d"; } else if(days===0){ cls="due"; txt="Due today"; } else if(days<=3){ cls="soon"; txt="Due in "+days+"d"; } else txt="Due "+iso; return { days,cls,txt }; }
+  function renderVault(){
+    const v=load(VAULT_KEY), el=$("vaultList");
+    if(!v.length){ el.innerHTML='<div class="list-empty">'+escapeHtml(t("No saved documents yet.")||"No saved documents yet.")+'</div>'; return; }
+    el.innerHTML=v.map(x=>{ const di=deadlineInfo(x.deadline), urgent=di&&di.days<=3; return '<div class="vault-item '+(urgent?"urgent":"")+'"><div class="vault-top"><div><div class="vault-title">'+escapeHtml(x.title)+'</div><div class="vault-meta">'+escapeHtml(x.doc_type||"Document")+" · "+new Date(x.savedAt).toLocaleDateString()+'</div></div><button class="icon-btn" data-del="'+x.id+'">delete</button></div><div class="badge-row" style="margin:10px 0 0;">'+legitBadge(x.legitimacy)+prioBadge(x.importance)+'</div>'+(di?'<div class="vault-deadline '+di.cls+'">📅 '+escapeHtml(di.txt)+'</div>':'')+'<div style="margin-top:10px;"><button class="icon-btn" data-view="'+x.id+'">view details</button></div><div class="vault-detail" data-detail="'+x.id+'"><div class="kv"><div class="k">'+escapeHtml(t("Summary"))+'</div><div class="v">'+escapeHtml(x.summary)+'</div></div>'+((x.medicines&&x.medicines.length)?'<div class="kv"><div class="k">'+escapeHtml(t("Medicines"))+'</div><div class="v">'+escapeHtml(x.medicines.map(m=>m.name).join(", "))+'</div></div>':'')+((x.advice&&x.advice.length)?'<div class="kv"><div class="k">'+escapeHtml(t("What you should do"))+'</div><ul class="steps">'+x.advice.map(a=>"<li>"+escapeHtml(a)+"</li>").join("")+'</ul></div>':'')+'</div></div>'; }).join("");
+    el.querySelectorAll("[data-del]").forEach(b=>b.addEventListener("click", ()=>{ save(VAULT_KEY, load(VAULT_KEY).filter(x=>x.id!=b.dataset.del)); renderVault(); updateBadges(); }));
+    el.querySelectorAll("[data-view]").forEach(b=>b.addEventListener("click", ()=>{ el.querySelector('[data-detail="'+b.dataset.view+'"]').classList.toggle("show"); }));
   }
 
-  /* ===================== VAULT ===================== */
-  function deadlineInfo(iso) {
-    if (!iso) return null;
-    const d = new Date(iso + "T00:00:00"); if (isNaN(d)) return null;
-    const days = Math.ceil((d - new Date().setHours(0,0,0,0)) / 86400000);
-    let cls = "", txt;
-    if (days < 0) { cls = "due"; txt = "Overdue by " + Math.abs(days) + " day" + (Math.abs(days)===1?"":"s"); }
-    else if (days === 0) { cls = "due"; txt = "Due today"; }
-    else if (days <= 3) { cls = "soon"; txt = "Due in " + days + " day" + (days===1?"":"s"); }
-    else { txt = "Due " + iso; }
-    return { days, cls, txt };
-  }
-
-  function renderVault() {
-    const vault = load(VAULT_KEY);
-    const el = $("vaultList");
-    if (!vault.length) { el.innerHTML = '<div class="list-empty">No saved documents yet.<br>Use “Check a Notice” to analyse a document, then save it here.</div>'; return; }
-    el.innerHTML = vault.map(v => {
-      const di = deadlineInfo(v.deadline);
-      const urgent = di && di.days <= 3;
-      return '<div class="vault-item ' + (urgent ? "urgent" : "") + '">' +
-        '<div class="vault-top"><div><div class="vault-title">' + escapeHtml(v.title) + "</div>" +
-          '<div class="vault-meta">' + escapeHtml(v.doc_type || "Document") + " · saved " + new Date(v.savedAt).toLocaleDateString() + "</div></div>" +
-          '<button class="icon-btn" data-del="' + v.id + '">delete</button></div>' +
-        '<div class="badge-row" style="margin:10px 0 0;">' + legitBadge(v.legitimacy) + prioBadge(v.importance) + "</div>" +
-        (di ? '<div class="vault-deadline ' + di.cls + '">📅 ' + escapeHtml(di.txt) + "</div>" : "") +
-        '<div style="margin-top:10px;"><button class="icon-btn" data-view="' + v.id + '">view details</button></div>' +
-        '<div class="vault-detail" data-detail="' + v.id + '">' +
-          '<div class="kv"><div class="k">Summary</div><div class="v">' + escapeHtml(v.summary) + "</div></div>" +
-          (v.translation ? '<div class="kv"><div class="k">Translation</div><div class="v">' + escapeHtml(v.translation) + "</div></div>" : "") +
-          (v.advice && v.advice.length ? '<div class="kv"><div class="k">What to do</div><ul class="advice-list">' + v.advice.map(a => "<li>" + escapeHtml(a) + "</li>").join("") + "</ul></div>" : "") +
-        "</div></div>";
-    }).join("");
-    el.querySelectorAll("[data-del]").forEach(b => b.addEventListener("click", () => {
-      save(VAULT_KEY, load(VAULT_KEY).filter(x => x.id != b.dataset.del)); renderVault(); updateBadges(); toast("Deleted", "");
-    }));
-    el.querySelectorAll("[data-view]").forEach(b => b.addEventListener("click", () => {
-      el.querySelector('[data-detail="' + b.dataset.view + '"]').classList.toggle("show");
-    }));
-  }
-
-  /* ===================== REPORT HAZARD ===================== */
-  let reportImg = null;
-  $("reportDrop").addEventListener("click", () => $("reportFile").click());
-  $("reportFile").addEventListener("change", async (e) => {
-    const f = e.target.files[0]; if (!f) return;
+  /* ===== REPORT ===== */
+  let reportImg=null, reportLoc=null;
+  $("reportDrop").addEventListener("click", ()=>$("reportFile").click());
+  $("reportFile").addEventListener("change", async e=>{ const f=e.target.files[0]; if(!f) return; try{ reportImg=await fileToScaledDataURL(f); const pv=$("reportPreview"); pv.src=reportImg; pv.hidden=false; $("reportDrop").hidden=true; }catch(err){ toast(err.message,"error"); } });
+  $("reportLocBtn").addEventListener("click", ()=>{ if(LOCATION){ reportLoc=LOCATION; $("reportAddr").value=LOCATION.label||""; toast("Using your location","success"); } else requestGps(); });
+  $("submitReportBtn").addEventListener("click", async ()=>{
+    if(!reportImg){ toast("Add a photo of the hazard first","error"); return; }
+    const desc=$("reportDesc").value.trim(); const addr=$("reportAddr").value.trim(); const emerg=$("reportEmergency").checked;
+    const btn=$("submitReportBtn"); setBtnLoading(btn,true,t("Screening photo…")||"Screening photo…"); $("reportOutput").innerHTML="";
+    const prompt=`You screen hazard-report photos for CrisisConnect (Bangalore). The user's description: "${desc||"(none)"}". Reply ONLY JSON:
+{"appropriate":true/false,"relevant":true/false,"reason":"if not ok","hazard_type":"short label","severity":"low|medium|high","needs_immediate_help":true/false,"public_summary":"1 neutral sentence to show neighbours and the civic body"}
+appropriate=false if sexual, violent, hateful, or shows private individuals as the subject. relevant=false if it does not plausibly show public infrastructure or a public hazard.`;
     try {
-      reportImg = await fileToScaledDataURL(f);
-      const pv = $("reportPreview"); pv.src = reportImg; pv.hidden = false; $("reportDrop").hidden = true;
-    } catch (err) { toast(err.message, "error"); }
+      const raw=await groqVision(prompt,reportImg); const d=parseJsonLoose(raw);
+      if(d.appropriate===false||d.relevant===false){ $("reportOutput").innerHTML='<div class="card"><div class="error-box">⚠️ '+escapeHtml(d.reason||"This photo didn't pass screening.")+'</div></div>'; return; }
+      let loc=reportLoc; if(!loc&&addr){ loc=await geocodeAddress(addr); } if(!loc) loc=LOCATION;
+      const ref="CC-"+Math.random().toString(36).slice(2,7).toUpperCase();
+      const report={ id:Date.now(), ref, type:(emerg||d.needs_immediate_help)?"emergency":"hazard", hazard_type:d.hazard_type||"Hazard", severity:d.severity||"medium", summary:d.public_summary||desc||"Reported hazard", loc:loc&&loc.lat!=null?{lat:loc.lat,lng:loc.lng,label:loc.label}:null, createdAt:new Date().toISOString(), status:"open" };
+      const feed=load(FEED_KEY); feed.unshift(report); save(FEED_KEY,feed);
+      const nearby=3+Math.floor(Math.random()*12); renderReportSuccess(report,nearby); updateBadges();
+      if(report.type==="emergency") toast("🚨 "+nearby+" "+(t("nearby users notified")||"nearby users notified"),"error");
+      reportImg=null; $("reportFile").value=""; $("reportPreview").hidden=true; $("reportDrop").hidden=false; $("reportDesc").value=""; $("reportAddr").value=""; $("reportEmergency").checked=false; reportLoc=null;
+    } catch(err){ console.error(err); $("reportOutput").innerHTML='<div class="card"><div class="error-box">'+escapeHtml(friendlyError(err))+'</div></div>'; }
+    finally { setBtnLoading(btn,false,'<span>'+escapeHtml(t("Check & submit report"))+'</span>'); }
   });
-  $("reportLocBtn").addEventListener("click", () => {
-    getLocation((loc) => { REPORT_LOC = loc; $("reportLocBtn").innerHTML = "📍 Location added"; toast("Location added to report", "success"); });
-  });
+  function renderReportSuccess(r,nearby){ const emoji=r.type==="emergency"?"🚨":"✅"; $("reportOutput").innerHTML='<div class="card"><div class="badge-row">'+(r.type==="emergency"?'<span class="feed-pill emergency">Emergency</span>':'<span class="feed-pill hazard">Hazard</span>')+'<span class="badge prio-'+(r.severity==="high"?"high":r.severity==="medium"?"medium":"low")+'">'+escapeHtml((t("Severity")||"Severity")+": "+r.severity)+'</span></div><div class="understood">'+emoji+' '+escapeHtml(t("Report submitted"))+'</div><div class="kv"><div class="k">'+escapeHtml(t("What you reported"))+'</div><div class="v">'+escapeHtml(r.hazard_type)+" — "+escapeHtml(r.summary)+'</div></div><div class="kv"><div class="k">'+escapeHtml(t("Status"))+'</div><div class="v">📨 Forwarded to BBMP (1916) · Ref <b>'+escapeHtml(r.ref)+'</b> <em>(simulated)</em>'+(r.type==="emergency"?"<br>🚨 "+nearby+" nearby users alerted <em>(simulated)</em>":"")+(r.loc?"<br>📍 Location attached":"")+'</div></div></div>'; }
 
-  $("submitReportBtn").addEventListener("click", async () => {
-    if (!requireKey()) return;
-    if (!reportImg) { toast("Add a photo of the hazard first", "error"); return; }
-    const desc = $("reportDesc").value.trim();
-    const isEmergency = $("reportEmergency").checked;
-    const btn = $("submitReportBtn"); setBtnLoading(btn, true, "Screening photo…");
-    $("reportOutput").innerHTML = "";
-    const prompt = `You are CrisisConnect's hazard-report screener. A user in Bangalore submitted this photo to report unsafe public infrastructure. Their description: "${desc || "(none)"}".
-
-Moderate AND assess. Return ONLY this JSON (no markdown):
-{
-  "appropriate": true/false,   // false if sexual, violent/graphic, hateful, contains identifiable private individuals as the subject, or is spam
-  "relevant": true/false,      // true only if it plausibly shows public infrastructure or a public hazard (road, drain, wiring, building, flooding, garbage, etc.)
-  "reason": "short reason if appropriate=false or relevant=false",
-  "hazard_type": "short label e.g. Open drain / Pothole / Exposed wiring / Flooding / Collapsed structure",
-  "severity": "low | medium | high",
-  "needs_immediate_help": true/false,
-  "public_summary": "1 sentence neutral description suitable to show neighbours and send to the civic body"
-}`;
-    try {
-      const raw = await groqVision(prompt, reportImg);
-      const d = parseJsonLoose(raw);
-      if (d.appropriate === false || d.relevant === false) {
-        $("reportOutput").innerHTML = '<div class="card" style="margin-top:18px;"><div class="error-box">⚠️ ' + escapeHtml(d.reason || "This photo didn't pass screening.") + " Reports must show genuine public infrastructure hazards.</div></div>";
-        return;
+  /* ===== COMMUNITY ===== */
+  function seedFeed(){ if(localStorage.getItem("cc_seeded")) return; const now=Date.now(); const seed=[ { id:now-1, ref:"CC-SEED1", type:"hazard", hazard_type:"Open drain", severity:"high", summary:"Uncovered storm drain on the footpath near the bus stop", loc:{lat:12.9352,lng:77.6245}, createdAt:new Date(now-3600000*4).toISOString(), status:"open" }, { id:now-2, ref:"CC-SEED2", type:"resolved", hazard_type:"Fallen tree", severity:"medium", summary:"Tree branch cleared from the road after last night's rain", loc:{lat:12.9766,lng:77.5993}, createdAt:new Date(now-3600000*26).toISOString(), status:"resolved" } ]; save(FEED_KEY, seed.concat(load(FEED_KEY))); localStorage.setItem("cc_seeded","1"); }
+  function timeAgo(iso){ const s=Math.floor((Date.now()-new Date(iso))/1000); if(s<3600) return Math.max(1,Math.floor(s/60))+" min ago"; if(s<86400) return Math.floor(s/3600)+" hr ago"; return Math.floor(s/86400)+"d ago"; }
+  function renderFeed(){
+    const feed=load(FEED_KEY).slice().sort((a,b)=>{ const rank=t=>t==="emergency"?0:t==="help"?1:t==="hazard"?2:3; return rank(a.type)-rank(b.type)||new Date(b.createdAt)-new Date(a.createdAt); });
+    const el=$("feedList");
+    if(!feed.length){ el.innerHTML='<div class="list-empty">'+escapeHtml(t("No community reports yet.")||"No community reports yet.")+'</div>'; return; }
+    el.innerHTML=feed.map(r=>{
+      const pill=r.type==="emergency"?'<span class="feed-pill emergency">🚨 '+escapeHtml(t("Emergency")||"Emergency")+'</span>':r.type==="help"?'<span class="feed-pill help">🆘 '+escapeHtml(t("Help needed")||"Help needed")+'</span>':r.type==="resolved"?'<span class="feed-pill resolved">✓ '+escapeHtml(t("Resolved")||"Resolved")+'</span>':'<span class="feed-pill hazard">⚠ '+escapeHtml(t("Hazard")||"Hazard")+'</span>';
+      const dist=(LOCATION&&LOCATION.lat!=null&&r.loc)?distanceLabel({lat:r.loc.lat,lng:r.loc.lng}):"";
+      const urgent=(r.type==="emergency"||r.type==="help");
+      let ackHtml="";
+      if(urgent){
+        const n=r.responders||0;
+        const who=n>0?'<div class="vault-deadline soon" style="margin-top:8px;">🙋 '+n+' '+escapeHtml(t("coming to help")||"coming to help")+(r.ackedByMe?(" · "+escapeHtml(t("including you")||"including you")):"")+'</div>':'';
+        const btn=r.ackedByMe?'<button class="btn-secondary" disabled style="margin-top:8px;">✓ '+escapeHtml(t("You're on the way")||"You're on the way")+'</button>':'<button class="btn-secondary" data-ack="'+r.id+'" style="margin-top:8px;">🙋 '+escapeHtml(t("I'm coming to help")||"I'm coming to help")+'</button>';
+        ackHtml=who+btn;
       }
-      const ref = "CC-" + Math.random().toString(36).slice(2, 7).toUpperCase();
-      const report = {
-        id: Date.now(), ref, type: (isEmergency || d.needs_immediate_help) ? "emergency" : "hazard",
-        hazard_type: d.hazard_type || "Hazard", severity: d.severity || "medium",
-        summary: d.public_summary || desc || "Reported hazard", desc,
-        loc: REPORT_LOC, createdAt: new Date().toISOString(), status: "open"
-      };
-      const feed = load(FEED_KEY); feed.unshift(report); save(FEED_KEY, feed);
-      const nearby = 3 + Math.floor(Math.random() * 12);
-      renderReportSuccess(report, nearby);
-      updateBadges();
-      if (report.type === "emergency") toast("🚨 " + nearby + " nearby users notified (demo)", "error");
-      // reset inputs
-      reportImg = null; $("reportFile").value = ""; $("reportPreview").hidden = true; $("reportDrop").hidden = false;
-      $("reportDesc").value = ""; $("reportEmergency").checked = false; REPORT_LOC = null; $("reportLocBtn").innerHTML = "📍 Add location";
-    } catch (err) { console.error(err); $("reportOutput").innerHTML = '<div class="card" style="margin-top:18px;"><div class="error-box">' + escapeHtml(friendlyError(err)) + "</div></div>"; }
-    finally { setBtnLoading(btn, false, "Check &amp; submit report"); }
-  });
-
-  function renderReportSuccess(r, nearby) {
-    const emoji = r.type === "emergency" ? "🚨" : "✅";
-    $("reportOutput").innerHTML = '<div class="card" style="margin-top:18px;">' +
-      '<div class="badge-row">' + (r.type === "emergency" ? '<span class="feed-pill emergency">Emergency</span>' : '<span class="feed-pill hazard">Hazard</span>') +
-        '<span class="badge prio-' + (r.severity==="high"?"high":r.severity==="medium"?"medium":"low") + '">Severity: ' + escapeHtml(r.severity) + "</span></div>" +
-      '<div class="understood" style="margin-top:4px;">' + emoji + " Report submitted</div>" +
-      '<div class="kv"><div class="k">What you reported</div><div class="v">' + escapeHtml(r.hazard_type) + " — " + escapeHtml(r.summary) + "</div></div>" +
-      '<div class="kv"><div class="k">Status</div><div class="v">📨 Forwarded to BBMP civic helpline (1916) · Ref <strong>' + escapeHtml(r.ref) + "</strong> <em>(simulated)</em>" +
-        (r.type === "emergency" ? "<br>🚨 " + nearby + " nearby users alerted <em>(simulated)</em>" : "") +
-        (r.loc ? "<br>📍 Location attached" : "<br>📍 No location attached") + "</div></div>" +
-      '<div class="card-notice">In this demo, forwarding and neighbour alerts are simulated on-device. The photo and text were screened by AI before being added to the community feed.</div>' +
-    "</div>";
-  }
-
-  /* ===================== COMMUNITY FEED ===================== */
-  function seedFeed() {
-    if (localStorage.getItem("cc_seeded")) return;
-    const now = Date.now();
-    const seed = [
-      { id: now-1, ref: "CC-SEED1", type: "hazard", hazard_type: "Open drain", severity: "high", summary: "Uncovered storm drain on the footpath near the bus stop", desc: "", loc: { lat: 12.9352, lng: 77.6245 }, createdAt: new Date(now-3600000*4).toISOString(), status: "open" },
-      { id: now-2, ref: "CC-SEED2", type: "resolved", hazard_type: "Fallen tree", severity: "medium", summary: "Tree branch cleared from the road after last night's rain", desc: "", loc: { lat: 12.9766, lng: 77.5993 }, createdAt: new Date(now-3600000*26).toISOString(), status: "resolved" }
-    ];
-    save(FEED_KEY, seed.concat(load(FEED_KEY)));
-    localStorage.setItem("cc_seeded", "1");
-  }
-
-  function timeAgo(iso) {
-    const s = Math.floor((Date.now() - new Date(iso)) / 1000);
-    if (s < 3600) return Math.max(1, Math.floor(s/60)) + " min ago";
-    if (s < 86400) return Math.floor(s/3600) + " hr ago";
-    return Math.floor(s/86400) + " day(s) ago";
-  }
-
-  function renderFeed() {
-    const feed = load(FEED_KEY).slice().sort((a,b) => {
-      const rank = t => t === "emergency" ? 0 : t === "hazard" ? 1 : 2;
-      return rank(a.type) - rank(b.type) || new Date(b.createdAt) - new Date(a.createdAt);
-    });
-    const el = $("feedList");
-    if (!feed.length) { el.innerHTML = '<div class="list-empty">No community reports yet.</div>'; return; }
-    el.innerHTML = feed.map(r => {
-      const pill = r.type === "emergency" ? '<span class="feed-pill emergency">🚨 Emergency</span>' : r.type === "resolved" ? '<span class="feed-pill resolved">✓ Resolved</span>' : '<span class="feed-pill hazard">⚠ Hazard</span>';
-      const dist = (USER_LOC && r.loc) ? distanceLabel({ lat: r.loc.lat, lng: r.loc.lng }) : "";
-      return '<div class="feed-item ' + (r.type === "emergency" ? "urgent" : "") + '">' +
-        '<div class="badge-row" style="margin-bottom:8px;">' + pill + '<span class="badge prio-low">' + escapeHtml(r.hazard_type) + "</span></div>" +
-        '<div class="vault-title">' + escapeHtml(r.summary) + "</div>" +
-        '<div class="vault-meta">' + timeAgo(r.createdAt) + (dist ? " · 📍 " + escapeHtml(dist) : "") + " · Ref " + escapeHtml(r.ref) + "</div>" +
-        (r.type === "emergency" ? '<div class="vault-deadline due" style="margin-top:8px;">People nearby have been alerted to help <em>(demo)</em></div>' : "") +
-      "</div>";
+      return '<div class="feed-item '+(urgent?"urgent":"")+'"><div class="badge-row" style="margin-bottom:8px;">'+pill+'<span class="badge prio-low">'+escapeHtml(r.hazard_type)+'</span></div><div class="vault-title">'+escapeHtml(r.summary)+'</div><div class="vault-meta">'+timeAgo(r.createdAt)+(dist?" · 📍 "+escapeHtml(dist):"")+" · Ref "+escapeHtml(r.ref)+'</div>'+ackHtml+'</div>';
     }).join("");
+    el.querySelectorAll("[data-ack]").forEach(b=>b.addEventListener("click", ()=>{
+      const feed=load(FEED_KEY); const it=feed.find(x=>x.id==b.dataset.ack);
+      if(it&&!it.ackedByMe){ it.ackedByMe=true; it.responders=(it.responders||0)+1; save(FEED_KEY,feed); renderFeed(); toast(t("You're on the way — the person has been told")||"You're on the way — the person has been told","success"); }
+    }));
   }
 
-  /* ===================== Badges / reminders ===================== */
-  function updateBadges() {
-    const vault = load(VAULT_KEY);
-    const dueSoon = vault.filter(v => { const di = deadlineInfo(v.deadline); return di && di.days <= 3; }).length;
-    const vb = $("vaultBadge"); vb.textContent = dueSoon; vb.style.display = dueSoon ? "block" : "none";
-    const emerg = load(FEED_KEY).filter(r => r.type === "emergency").length;
-    const cb = $("commBadge"); cb.textContent = emerg; cb.style.display = emerg ? "block" : "none";
-  }
+  /* ===== Badges / reminders ===== */
+  function updateBadges(){ const due=load(VAULT_KEY).filter(v=>{ const di=deadlineInfo(v.deadline); return di&&di.days<=3; }).length; const vb=$("vaultBadge"); vb.textContent=due; vb.style.display=due?"inline-block":"none"; const em=load(FEED_KEY).filter(r=>r.type==="emergency"||r.type==="help").length; const cb=$("commBadge"); cb.textContent=em; cb.style.display=em?"inline-block":"none"; }
+  function remindOnLoad(){ const due=load(VAULT_KEY).filter(v=>{ const di=deadlineInfo(v.deadline); return di&&di.days<=3; }); if(due.length) setTimeout(()=>toast("🔔 "+due.length+" "+(t("documents need action soon")||"document(s) need action soon"),"error"),900); }
 
-  function remindOnLoad() {
-    const due = load(VAULT_KEY).filter(v => { const di = deadlineInfo(v.deadline); return di && di.days <= 3; });
-    if (due.length) setTimeout(() => toast("🔔 " + due.length + " document" + (due.length===1?"":"s") + " in your vault need" + (due.length===1?"s":"") + " action soon", "error"), 800);
-  }
-
-  /* ===================== Init ===================== */
-  applyKeyState();
-  seedFeed();
-  updateBadges();
-  remindOnLoad();
+  /* ===== Init ===== */
+  if(!API_KEY) console.warn("CrisisConnect: no Groq key found. Set window.CRISISCONNECT_KEY in config.js.");
+  seedFeed(); updateBadges(); remindOnLoad(); requestGps();
 </script>
 </body>
 </html>

@@ -63,6 +63,13 @@ cp config.example.js config.js   # then edit config.js
 
 `config.js` is git-ignored, so the key never enters the repo. **Caution:** any key shipped to the browser is visible to anyone who opens the page. For a public demo, use a disposable free key and rotate it afterwards — never commit a real key to a public repo.
 
+### Run with location/GPS enabled
+
+Browsers block geolocation on `file://`, so opening `index.html` directly won't trigger the GPS prompt (the in-app address bar still works). To enable GPS, run it on localhost:
+
+- **macOS:** double-click **`start.command`** — it serves the app and opens `http://localhost:8123/index.html`.
+- **Any OS:** `python3 -m http.server 8123` in this folder, then open `http://localhost:8123/index.html`.
+
 ---
 
 ## Tech stack
